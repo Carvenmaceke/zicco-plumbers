@@ -20,7 +20,7 @@ const TOP = ["images", "js", "admin", "styles.css", "favicon.svg", "og.jpg", "se
 const topRe = new RegExp(`(?<=["'(\\s,=])/(?=(?:${TOP.map((t) => t.replace(".", "\\.")).join("|")})(?:[/"'?#\\s,)]|$))`, "g");
 const homeRe = /(?<=href=["'])\/(?=["'])/g; // href="/" links to the home page (HTML only)
 
-const BANNER = (base) => `<div class="pages-preview" style="background:#ffd23f;color:#1b1b2f;font:700 14px/1.4 system-ui,sans-serif;padding:9px 16px;text-align:center;position:relative;z-index:50;border-bottom:3px solid #1b1b2f">Demo version: everything works, using sample data saved only in your browser. No emails are sent. <a href="${base}admin/" style="color:inherit">Manager dashboard</a> (admin / zicco-demo) &middot; <a href="#" onclick="zpResetDemo();return false" style="color:inherit">Reset demo</a></div>`;
+const BANNER = (base) => `<div class="pages-preview" style="background:#08222c;color:#e8f1f4;font:500 13.5px/1.5 Inter,system-ui,sans-serif;padding:9px 16px;text-align:center;position:relative;z-index:50">Demo version: everything works, using sample data saved only in your browser. No emails are sent. <a href="${base}admin/" style="color:#f2a93b;font-weight:600">Manager dashboard</a> (admin / zicco-demo) &middot; <a href="#" onclick="zpResetDemo();return false" style="color:#f2a93b;font-weight:600">Reset demo</a></div>`;
 
 function rewrite(text, html) {
   if (base === "/") return text;

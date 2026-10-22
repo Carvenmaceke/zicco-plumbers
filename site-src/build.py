@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from content import *  # noqa
 
 SRC, OUT = sys.argv[1], sys.argv[2]
-CSS_V = "5"
+CSS_V = "6"
 IMG_DIMS = {}
 
 
@@ -24,8 +24,7 @@ def icon(name, size=24, sw=2):
 PHONE_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.6 15.6 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.2 2.2Z"/></svg>'
 WA_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.2c-.2.6-1.2 1.2-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.6-1.1-4.3-3.8-4.4-4-.1-.2-1.1-1.4-1.1-2.7s.7-1.9.9-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.4l.8 2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.5 1.5.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.6.4 0 .1 0 .7-.2 1.3Z"/></svg>'
 QUOTE_SVG = icon("file", 18)
-MASCOT = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "mascot.svg"), encoding="utf-8").read()
-LOGO = '<svg class="brand-mark" width="44" height="44" viewBox="0 0 64 64" aria-hidden="true"><rect x="5" y="5" width="56" height="56" rx="16" fill="#1b1b2f"/><rect x="2" y="2" width="56" height="56" rx="16" fill="#ffd23f" stroke="#1b1b2f" stroke-width="3.5"/><text x="30" y="40" font-family="Fredoka, Arial, sans-serif" font-size="25" font-weight="700" text-anchor="middle" fill="#1b1b2f">ZP</text><path d="M44 12c3 4 4.5 6.5 4.5 8.5a4.5 4.5 0 0 1-9 0c0-2 1.5-4.5 4.5-8.5z" fill="#4cc9f0" stroke="#1b1b2f" stroke-width="2.5"/></svg>'
+LOGO = '<svg class="brand-mark" width="42" height="42" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="zpg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a8fb0"/><stop offset="1" stop-color="#0e3442"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#zpg)"/><path d="M32 13c6 8 10 13.5 10 18.5a10 10 0 0 1-20 0C22 26.5 26 21 32 13z" fill="#f2a93b"/><text x="32" y="56" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="13" font-weight="800" text-anchor="middle" fill="#fff" letter-spacing="1">ZP</text></svg>'
 
 
 def btn_call(label=None, cls="btn-big"):
@@ -187,10 +186,11 @@ def page(path, title, desc, body, schemas=(), noindex=False, og_image="/og.jpg")
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#133c4b">
 <meta name="format-detection" content="telephone=no">
+<script>document.documentElement.classList.add("js");setTimeout(function(){{document.querySelectorAll(".reveal").forEach(function(e){{e.classList.add("in")}})}},4000)</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="/styles.css?v={CSS_V}">
 <!-- Google Analytics 4: paste the gtag.js snippet from analytics.google.com here (see README.md). Call, WhatsApp and form events are sent automatically by /js/site.js. -->
 {ld}<script src="/js/site.js?v={CSS_V}" defer></script>
@@ -254,7 +254,7 @@ def trust_card():
 def service_cards(services=None):
     services = services or SERVICES
     return '<div class="grid grid-3">' + "".join(
-        f'<a class="card service-card" href="/services/{s["slug"]}/"><div class="body">'
+        f'<a class="card service-card reveal" href="/services/{s["slug"]}/"><div class="body">'
         f'<span class="icon-blob c{n % 6 + 1}">{icon(s["icon"])}</span>'
         f'<h3>{s["name"]}</h3><p>{s["card"]}</p><span class="more">Learn more &rarr;</span></div></a>'
         for n, s in enumerate(services)) + "</div>"
@@ -262,7 +262,7 @@ def service_cards(services=None):
 
 def cta_band(title="Need a plumber in Johannesburg?", text=None):
     text = text or f"Call or WhatsApp {PHONE_DISPLAY} and ask for {CONTACT_PERSON}, or send us the details online."
-    return f"""<section class="section"><div class="wrap"><div class="cta-band">
+    return f"""<section class="section"><div class="wrap"><div class="cta-band reveal">
   <div><h2>{title}</h2><p>{text}</p></div>
   <div class="cta-row">{btn_call()}{btn_wa()}{btn_quote()}</div>
 </div></div></section>"""
@@ -283,7 +283,7 @@ def map_block():
 
 def page_hero(trail, h1, lead, ctas=True, wa_text=None):
     c = f'<div class="cta-row">{btn_quote()}{btn_wa(wa_text)}{btn_call()}</div>' if ctas else ""
-    return f"""<section class="hero page-hero wave-bottom">
+    return f"""<section class="hero page-hero">
   <div class="wrap hero-inner" style="grid-template-columns:1fr">
     <div>{crumbs_html(trail)}<h1>{h1}</h1><p class="lead">{lead}</p>{c}</div>
   </div>
@@ -307,7 +307,7 @@ def aside(wa_text=None, related=None):
 def build_home():
     gallery_keys = ["booster", "heatpump", "slab", "geyser", "shower", "stack"]
     gallery = '<div class="gallery">' + "".join(
-        f'<figure>{pic(k)}<figcaption>{CAPTIONS[k]}</figcaption></figure>' for k in gallery_keys) + "</div>"
+        f'<figure class="reveal">{pic(k)}<figcaption>{CAPTIONS[k]}</figcaption></figure>' for k in gallery_keys) + "</div>"
     audiences = [
         ("users", "Homeowners & tenants", "Geysers, leaks, blocked drains and repairs, with a COC where it's needed."),
         ("crane", "Contractors & developers", "Complete plumbing installations on new construction sites and high-rise buildings."),
@@ -315,19 +315,26 @@ def build_home():
         ("home", "Student accommodation", "Metered showers, heat pumps and reliable plumbing for heavily used bathrooms."),
     ]
     aud = '<div class="grid grid-4">' + "".join(
-        f'<div class="card audience"><h3><span class="icon-blob c{n % 6 + 1}">{icon(i)}</span> {t}</h3><p>{d}</p></div>' for n, (i, t, d) in enumerate(audiences)) + "</div>"
-    body = f"""<section class="hero wave-bottom">
+        f'<div class="card audience reveal"><h3><span class="icon-blob c{n % 6 + 1}">{icon(i)}</span> {t}</h3><p>{d}</p></div>' for n, (i, t, d) in enumerate(audiences)) + "</div>"
+    body = f"""<section class="hero">
+  <div class="hero-bg">{pic("hero", "100vw", lazy=False, alt="")}</div>
   <div class="wrap hero-inner">
     <div>
-      <p class="eyebrow">PIRB registered &middot; Johannesburg</p>
-      <h1>Johannesburg plumbers for <span class="hl">drains, leaks &amp; geysers</span> &mdash; sorted!</h1>
-      <p class="lead">{NAME} clears blocked drains, finds hidden leaks, fixes and installs geysers and heat pumps, and plumbs new and high-rise buildings across Johannesburg.</p>
+      <p class="eyebrow">PIRB-registered plumbers &middot; Johannesburg</p>
+      <h1>Reliable plumbing, <span class="hl">done right</span> the first time.</h1>
+      <p class="lead">{NAME} clears blocked drains, finds hidden leaks, installs geysers and heat pumps, and delivers complete plumbing for new and high-rise buildings across Johannesburg.</p>
       <div class="cta-row">{btn_quote()}{btn_wa()}</div>
-      <ul class="chips"><li>{icon("shield", 16)} PIRB registered</li><li>{icon("id", 16)} Licensed plumber</li><li>{icon("file", 16)} COC issued</li></ul>
+      <ul class="chips"><li>{icon("shield", 18)} PIRB registered company</li><li>{icon("id", 18)} Licensed plumber</li><li>{icon("file", 18)} COC issued</li></ul>
     </div>
-    <div class="hero-art">
-      <div class="bubble">Leak? Blocked drain? Burst geyser? Call {CONTACT_PERSON.split()[0]}!</div>
-      {MASCOT}
+    <div class="hero-card">
+      <h2>Get your plumbing sorted</h2>
+      <p class="muted small" style="margin:0">Ask for {CONTACT_PERSON}.</p>
+      <ol>
+        <li><span><strong>Tell us about the job.</strong> Call, WhatsApp or use the form, and add a photo if you can.</span></li>
+        <li><span><strong>Get a clear quote.</strong> We explain what's needed and what it will cost.</span></li>
+        <li><span><strong>Job done properly.</strong> Work by a licensed plumber, with a COC where required.</span></li>
+      </ol>
+      {btn_quote("Request a quote", "")}{btn_call(None, "")}
     </div>
   </div>
 </section>
@@ -341,7 +348,7 @@ def build_home():
 
 <section id="services" class="section">
   <div class="wrap">
-    <div class="section-head"><p class="eyebrow">Services</p><h2>Plumbing services in Johannesburg</h2>
+    <div class="section-head reveal"><p class="eyebrow">Services</p><h2>Plumbing services in Johannesburg</h2>
     <p>From a blocked drain at home to the full plumbing installation in a new high-rise, one registered plumbing company handles it.</p></div>
     {service_cards()}
   </div>
@@ -349,14 +356,14 @@ def build_home():
 
 <section class="section section-alt">
   <div class="wrap">
-    <div class="section-head"><p class="eyebrow">Who we work with</p><h2>Plumbing for homes, buildings and construction sites</h2></div>
+    <div class="section-head reveal"><p class="eyebrow">Who we work with</p><h2>Plumbing for homes, buildings and construction sites</h2></div>
     {aud}
   </div>
 </section>
 
-<section class="section section-dark wave-bottom">
+<section class="section section-dark">
   <div class="wrap">
-    <div class="section-head"><p class="eyebrow" style="color:var(--accent)">How it works</p><h2>Three simple steps</h2></div>
+    <div class="section-head reveal"><p class="eyebrow" style="color:var(--accent)">How it works</p><h2>Three simple steps</h2></div>
     <ol class="steps">
       <li><h3>Send us the details</h3><p>Use the form, WhatsApp or a phone call. Photos of the problem help us quote accurately.</p></li>
       <li><h3>Get a quote</h3><p>We explain what needs to be done and what it will cost before any work starts.</p></li>
@@ -367,7 +374,7 @@ def build_home():
 
 <section id="gallery" class="section">
   <div class="wrap">
-    <div class="section-head"><p class="eyebrow">Our work</p><h2>Recent plumbing projects</h2><p>Booster pumps, heat pumps, new building drainage, geysers and bathrooms.</p></div>
+    <div class="section-head reveal"><p class="eyebrow">Our work</p><h2>Recent plumbing projects</h2><p>Booster pumps, heat pumps, new building drainage, geysers and bathrooms.</p></div>
     {gallery}
     <p style="margin-top:20px"><a class="btn btn-ghost" href="/projects/">See all projects &rarr;</a></p>
   </div>
@@ -388,14 +395,14 @@ def build_home():
 
 <section id="areas" class="section">
   <div class="wrap">
-    <div class="section-head"><p class="eyebrow">Areas served</p><h2>Plumber across Johannesburg</h2><p>Based in Braamfontein, we work throughout Johannesburg, including:</p></div>
+    <div class="section-head reveal"><p class="eyebrow">Areas served</p><h2>Plumber across Johannesburg</h2><p>Based in Braamfontein, we work throughout Johannesburg, including:</p></div>
     {area_links()}
   </div>
 </section>
 
 <section class="section section-alt">
   <div class="wrap narrow">
-    <div class="section-head"><p class="eyebrow">FAQ</p><h2>Frequently asked questions</h2></div>
+    <div class="section-head reveal"><p class="eyebrow">FAQ</p><h2>Frequently asked questions</h2></div>
     {faq_html(HOME_FAQS)}
     <p style="margin-top:18px"><a href="/faq/">More questions &rarr;</a></p>
   </div>
@@ -510,7 +517,7 @@ def build_area(a):
 def build_projects():
     trail = [("Home", "/"), ("Projects", "/projects/")]
     gallery = '<div class="gallery">' + "".join(
-        f'<figure>{pic(k)}<figcaption>{CAPTIONS[k]}</figcaption></figure>' for k in IMAGES if k != "hero") + "</div>"
+        f'<figure class="reveal">{pic(k)}<figcaption>{CAPTIONS[k]}</figcaption></figure>' for k in IMAGES if k != "hero") + "</div>"
     body = page_hero(trail, "Our plumbing projects",
                      "A selection of work by Zicco Plumbers: booster pumps, heat pumps and geysers, new building drainage, water supply and bathrooms.") + \
         f'<section class="section"><div class="wrap">{gallery}</div></section>' + cta_band("Have a project in mind?", "Send us the drawings or a description of the job and we'll quote.")

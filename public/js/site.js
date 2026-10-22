@@ -88,6 +88,21 @@
     });
   });
 
+  // Reveal sections and cards as they scroll into view, staggering items in the same row.
+  var items = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var el = en.target, sibs = el.parentElement ? Array.prototype.filter.call(el.parentElement.children, function (c) { return c.classList.contains("reveal"); }) : [];
+        el.style.setProperty("--d", Math.min(sibs.indexOf(el) % 3, 2) * 0.08 + "s");
+        el.classList.add("in");
+        io.unobserve(el);
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    items.forEach(function (el) { io.observe(el); });
+  } else items.forEach(function (el) { el.classList.add("in"); });
+
   // Close the mobile menu after choosing a link.
   document.querySelectorAll(".menu a").forEach(function (a) {
     a.addEventListener("click", function () { var d = a.closest("details"); if (d) d.open = false; });
