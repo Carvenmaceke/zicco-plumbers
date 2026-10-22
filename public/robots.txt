@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /thank-you/
+Disallow: /track/
+Disallow: /doc/
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://ziccoplumbersgp.co.za/sitemap.xml
