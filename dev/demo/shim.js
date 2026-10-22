@@ -10,7 +10,8 @@
   };
   var apiRe = new RegExp("^(" + basePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")?/api/");
   var backend = null;
-  function load() { return (backend = backend || import(BASE + "js/demo-backend.js")); }
+  var V = script.getAttribute("data-v") || "";
+  function load() { return (backend = backend || import(BASE + "js/demo-backend.js" + (V ? "?v=" + V : ""))); }
 
   function apiUrl(input) {
     var u = new URL(typeof input === "string" ? input : input.url, location.href);

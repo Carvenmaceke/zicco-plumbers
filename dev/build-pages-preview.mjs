@@ -12,6 +12,8 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const out = path.resolve(process.argv[2] || "_site");
+// Changes on every publish so browsers fetch fresh demo scripts instead of cached ones.
+const VERSION = (process.env.GITHUB_SHA || Date.now().toString(36)).slice(0, 10);
 const base = ("/" + String(process.argv[3] || "/").replace(/^\/+|\/+$/g, "") + "/").replace(/^\/\/$/, "/");
 
 // Top-level paths of the site. Anything else (e.g. /api/) is left alone.
@@ -39,7 +41,7 @@ async function copy(src, dest) {
   if (![".html", ".js", ".css"].includes(ext)) return fs.copyFile(src, dest);
   let text = rewrite(await fs.readFile(src, "utf8"), ext === ".html");
   if (ext === ".html") {
-    text = text.replace("<head>", `<head>\n<script src="${base}js/demo-shim.js"></script>`).replace(/<body([^>]*)>/, `<body$1>\n${BANNER(base)}`);
+    text = text.replace("<head>", `<head>\n<script src="${base}js/demo-shim.js?v=${VERSION}" data-v="${VERSION}"></script>`).replace(/<body([^>]*)>/, `<body$1>\n${BANNER(base)}`);
     if (!/<meta name="robots"/.test(text)) text = text.replace("</head>", `<meta name="robots" content="noindex">\n</head>`);
   }
   await fs.writeFile(dest, text);
