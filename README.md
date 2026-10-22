@@ -90,6 +90,11 @@ Redeploy after adding variables. Then open `/admin/`, go to **Settings**, and cl
 
 ---
 
+## GitHub Pages preview
+Every push to `main` publishes a **look-only** copy of the website to GitHub Pages (`.github/workflows/pages.yml`). The pages, links and design all work there. The quote form, request tracking and dashboard need the backend, so they only work on Netlify.
+
+One-time setup: on GitHub, go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**.
+
 ## Run it on your computer
 ```bash
 npm install
