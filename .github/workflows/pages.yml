@@ -1,7 +1,7 @@
-# Publishes a static preview of public/ to GitHub Pages on every push to main.
+# Publishes a working demo of the site to GitHub Pages on every push to main. The backend runs in
+# the visitor's browser with sample data (see dev/build-pages-preview.mjs); the real deployment is Netlify.
 # One-time setup: Settings > Pages > Build and deployment > Source: "GitHub Actions".
-# The full site (form, tracking, dashboard) runs on Netlify; see README.
-name: GitHub Pages preview
+name: GitHub Pages demo
 
 on:
   push:
@@ -28,7 +28,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Build preview
+      - run: npm ci
+      - name: Build demo
         run: node dev/build-pages-preview.mjs _site "/${{ github.event.repository.name }}/"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

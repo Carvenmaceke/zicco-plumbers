@@ -1,9 +1,12 @@
-// Builds a static preview of public/ for GitHub Pages, which serves the site under /<repo-name>/
-// and cannot run the Netlify Functions backend.
+// Builds a working demo of the site for GitHub Pages, which serves it under /<repo-name>/ and
+// cannot run server code.
 //   node dev/build-pages-preview.mjs <out-dir> <base-path>      e.g.  _site /zicco-plumbers/
 // - rewrites root-relative links ("/services/", "/styles.css", ...) to the base path
-// - adds a banner explaining that the form, tracking and dashboard need the Netlify deployment
+// - bundles the real backend (netlify/functions) to run in the browser, storing sample data in
+//   localStorage, and adds js/demo-shim.js which routes /api/* calls to it
+// - adds a banner explaining the demo
 import fs from "node:fs/promises";
+import * as esbuild from "esbuild";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -15,14 +18,14 @@ const base = ("/" + String(process.argv[3] || "/").replace(/^\/+|\/+$/g, "") + "
 const TOP = ["images", "js", "admin", "styles.css", "favicon.svg", "og.jpg", "services", "areas", "projects", "about", "faq",
   "contact", "quote", "privacy", "thank-you", "track", "doc", "sitemap.xml", "404.html"];
 const topRe = new RegExp(`(?<=["'(\\s,=])/(?=(?:${TOP.map((t) => t.replace(".", "\\.")).join("|")})(?:[/"'?#\\s,)]|$))`, "g");
-const homeRe = /(?<=["'])\/(?=["'])/g; // a bare "/" link to the home page
+const homeRe = /(?<=href=["'])\/(?=["'])/g; // href="/" links to the home page (HTML only)
 
-const BANNER = `<div class="pages-preview" style="background:#e0a526;color:#2b1d00;font:600 14px/1.4 system-ui,sans-serif;padding:8px 16px;text-align:center;position:relative;z-index:50">Preview on GitHub Pages: the pages are real, but the quote form, request tracking and dashboard only work on the Netlify version.</div>`;
-const INTERCEPT = `<script>document.addEventListener("submit",function(e){e.preventDefault();e.stopImmediatePropagation();alert("This is a GitHub Pages preview. Forms, tracking and the dashboard need the Netlify deployment (see README).");},true);</script>`;
+const BANNER = (base) => `<div class="pages-preview" style="background:#ffd23f;color:#1b1b2f;font:700 14px/1.4 system-ui,sans-serif;padding:9px 16px;text-align:center;position:relative;z-index:50;border-bottom:3px solid #1b1b2f">Demo version: everything works, using sample data saved only in your browser. No emails are sent. <a href="${base}admin/" style="color:inherit">Manager dashboard</a> (admin / zicco-demo) &middot; <a href="#" onclick="zpResetDemo();return false" style="color:inherit">Reset demo</a></div>`;
 
-function rewrite(text) {
+function rewrite(text, html) {
   if (base === "/") return text;
-  return text.replace(topRe, base).replace(homeRe, base);
+  text = text.replace(topRe, base);
+  return html ? text.replace(homeRe, base) : text;
 }
 
 async function copy(src, dest) {
@@ -34,9 +37,9 @@ async function copy(src, dest) {
   }
   const ext = path.extname(src);
   if (![".html", ".js", ".css"].includes(ext)) return fs.copyFile(src, dest);
-  let text = rewrite(await fs.readFile(src, "utf8"));
+  let text = rewrite(await fs.readFile(src, "utf8"), ext === ".html");
   if (ext === ".html") {
-    text = text.replace(/<body([^>]*)>/, `<body$1>\n${BANNER}`).replace("</body>", `${INTERCEPT}\n</body>`);
+    text = text.replace("<head>", `<head>\n<script src="${base}js/demo-shim.js"></script>`).replace(/<body([^>]*)>/, `<body$1>\n${BANNER(base)}`);
     if (!/<meta name="robots"/.test(text)) text = text.replace("</head>", `<meta name="robots" content="noindex">\n</head>`);
   }
   await fs.writeFile(dest, text);
@@ -45,6 +48,27 @@ async function copy(src, dest) {
 await fs.rm(out, { recursive: true, force: true });
 await copy(path.join(root, "public"), out);
 await fs.writeFile(path.join(out, ".nojekyll"), "");
+await fs.copyFile(path.join(root, "dev/demo/shim.js"), path.join(out, "js/demo-shim.js"));
+
+// Bundle the backend for the browser, swapping server-only modules for browser versions.
+const demo = (f) => path.join(root, "dev/demo", f);
+await esbuild.build({
+  entryPoints: [demo("backend.mjs")],
+  outfile: path.join(out, "js/demo-backend.js"),
+  bundle: true, format: "esm", platform: "browser", target: "es2020", minify: true, legalComments: "none",
+  define: { "process.env": "globalThis.__ZP_ENV" },
+  inject: [demo("buffer.mjs")],
+  logLevel: "warning",
+  plugins: [{
+    name: "browser-demo",
+    setup(b) {
+      b.onResolve({ filter: /^@netlify\/blobs$/ }, () => ({ path: demo("blobs.mjs") }));
+      b.onResolve({ filter: /^node:crypto$/ }, () => ({ path: demo("crypto.mjs") }));
+      b.onResolve({ filter: /^(node:fs\/promises|node:path|nodemailer)$/ }, () => ({ path: demo("empty.mjs") }));
+      b.onResolve({ filter: /\/lib\/auth\.mjs$/ }, () => ({ path: demo("auth.mjs") }));
+    },
+  }],
+});
 // The preview must not compete with the real site in Google.
 await fs.writeFile(path.join(out, "robots.txt"), "User-agent: *\nDisallow: /\n");
 console.log(`GitHub Pages preview written to ${out} (base ${base})`);

@@ -3,7 +3,7 @@ import { createTicket, saveFile, saveTicket } from "../lib/store.mjs";
 import { getSettings } from "../lib/settings.mjs";
 import { businessNewTicketEmail, customerReceivedEmail, sendEmail } from "../lib/email.mjs";
 import {
-  SERVICES, clean, cleanText, error, json, now, newToken, trackUrl, validEmail, validPhone,
+  SERVICES, SITE_URL, clean, cleanText, error, json, now, newToken, trackUrl, validEmail, validPhone,
 } from "../lib/util.mjs";
 
 const MAX_PHOTO = 5 * 1024 * 1024;
@@ -80,7 +80,8 @@ export default async (req) => {
     s.notifyEmail ? sendEmail(businessNewTicketEmail(ticket, s)) : null,
   ]);
 
-  const thanks = `/thank-you/?id=${encodeURIComponent(ticket.id)}&k=${encodeURIComponent(ticket.token)}`;
+  // Relative to SITE_URL so it also works when the site lives under a sub-path.
+  const thanks = `${new URL(SITE_URL).pathname.replace(/\/$/, "")}/thank-you/?id=${encodeURIComponent(ticket.id)}&k=${encodeURIComponent(ticket.token)}`;
   if (wantsJson) return json({ ok: true, id: ticket.id, trackUrl: trackUrl(ticket), redirect: thanks }, 201);
   return new Response(null, { status: 303, headers: { location: thanks } });
 };

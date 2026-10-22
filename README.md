@@ -90,8 +90,15 @@ Redeploy after adding variables. Then open `/admin/`, go to **Settings**, and cl
 
 ---
 
-## GitHub Pages preview
-Every push to `main` publishes a **look-only** copy of the website to GitHub Pages (`.github/workflows/pages.yml`). The pages, links and design all work there. The quote form, request tracking and dashboard need the backend, so they only work on Netlify.
+## GitHub Pages demo
+Every push to `main` publishes a **working demo** to GitHub Pages: https://carvenmaceke.github.io/zicco-plumbers/ (workflow: `.github/workflows/pages.yml`).
+
+GitHub Pages can't run server code, so the build bundles the real backend to run **inside the visitor's browser** (`dev/build-pages-preview.mjs`, `dev/demo/`). Sample data is saved in that browser only, so every visitor gets their own copy. Everything works except sending emails:
+- the quote form and the tracking page;
+- the dashboard at `/admin/` (log in with admin / zicco-demo);
+- quotes, invoices and PDFs.
+
+The banner at the top has a **Reset demo** link that restores the sample data.
 
 One-time setup: on GitHub, go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**.
 

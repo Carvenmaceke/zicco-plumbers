@@ -64,7 +64,7 @@ export async function sendEmail({ to, bcc, subject, html, replyTo, attachments }
     for (const a of attachments || []) await fs.writeFile(`${base}-${a.filename}`, a.content);
   }
   console.log(`[email not configured, skipped] to=${to} subject=${subject}`);
-  return { skipped: "email is not set up yet (see README)" };
+  return { skipped: process.env.EMAIL_SKIP_REASON || "email is not set up yet (see README)" };
 }
 
 // ---------- layout ----------
