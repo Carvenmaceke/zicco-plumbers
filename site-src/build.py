@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from content import *  # noqa
 
 SRC, OUT = sys.argv[1], sys.argv[2]
-CSS_V = "4"
+CSS_V = "5"
 IMG_DIMS = {}
 
 
@@ -24,7 +24,8 @@ def icon(name, size=24, sw=2):
 PHONE_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.6 15.6 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.2 2.2Z"/></svg>'
 WA_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.2c-.2.6-1.2 1.2-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.6-1.1-4.3-3.8-4.4-4-.1-.2-1.1-1.4-1.1-2.7s.7-1.9.9-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.4l.8 2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.5 1.5.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.6.4 0 .1 0 .7-.2 1.3Z"/></svg>'
 QUOTE_SVG = icon("file", 18)
-LOGO = '<svg class="brand-mark" width="38" height="38" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#1d5c73"/><text x="32" y="42" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" text-anchor="middle" fill="#ffffff">ZP</text></svg>'
+MASCOT = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "mascot.svg"), encoding="utf-8").read()
+LOGO = '<svg class="brand-mark" width="44" height="44" viewBox="0 0 64 64" aria-hidden="true"><rect x="5" y="5" width="56" height="56" rx="16" fill="#1b1b2f"/><rect x="2" y="2" width="56" height="56" rx="16" fill="#ffd23f" stroke="#1b1b2f" stroke-width="3.5"/><text x="30" y="40" font-family="Fredoka, Arial, sans-serif" font-size="25" font-weight="700" text-anchor="middle" fill="#1b1b2f">ZP</text><path d="M44 12c3 4 4.5 6.5 4.5 8.5a4.5 4.5 0 0 1-9 0c0-2 1.5-4.5 4.5-8.5z" fill="#4cc9f0" stroke="#1b1b2f" stroke-width="2.5"/></svg>'
 
 
 def btn_call(label=None, cls="btn-big"):
@@ -187,6 +188,9 @@ def page(path, title, desc, body, schemas=(), noindex=False, og_image="/og.jpg")
 <meta name="theme-color" content="#133c4b">
 <meta name="format-detection" content="telephone=no">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap">
 <link rel="stylesheet" href="/styles.css?v={CSS_V}">
 <!-- Google Analytics 4: paste the gtag.js snippet from analytics.google.com here (see README.md). Call, WhatsApp and form events are sent automatically by /js/site.js. -->
 {ld}<script src="/js/site.js?v={CSS_V}" defer></script>
@@ -251,9 +255,9 @@ def service_cards(services=None):
     services = services or SERVICES
     return '<div class="grid grid-3">' + "".join(
         f'<a class="card service-card" href="/services/{s["slug"]}/"><div class="body">'
-        f'<span style="width:48px;height:48px;border-radius:12px;background:var(--brand-tint);color:var(--brand);display:grid;place-items:center">{icon(s["icon"])}</span>'
+        f'<span class="icon-blob c{n % 6 + 1}">{icon(s["icon"])}</span>'
         f'<h3>{s["name"]}</h3><p>{s["card"]}</p><span class="more">Learn more &rarr;</span></div></a>'
-        for s in services) + "</div>"
+        for n, s in enumerate(services)) + "</div>"
 
 
 def cta_band(title="Need a plumber in Johannesburg?", text=None):
@@ -279,7 +283,7 @@ def map_block():
 
 def page_hero(trail, h1, lead, ctas=True, wa_text=None):
     c = f'<div class="cta-row">{btn_quote()}{btn_wa(wa_text)}{btn_call()}</div>' if ctas else ""
-    return f"""<section class="hero page-hero">
+    return f"""<section class="hero page-hero wave-bottom">
   <div class="wrap hero-inner" style="grid-template-columns:1fr">
     <div>{crumbs_html(trail)}<h1>{h1}</h1><p class="lead">{lead}</p>{c}</div>
   </div>
@@ -311,26 +315,19 @@ def build_home():
         ("home", "Student accommodation", "Metered showers, heat pumps and reliable plumbing for heavily used bathrooms."),
     ]
     aud = '<div class="grid grid-4">' + "".join(
-        f'<div class="card audience"><h3>{icon(i)} {t}</h3><p>{d}</p></div>' for i, t, d in audiences) + "</div>"
-    body = f"""<section class="hero">
-  <div class="hero-bg">{pic("hero", "100vw", lazy=False, alt="")}</div>
+        f'<div class="card audience"><h3><span class="icon-blob c{n % 6 + 1}">{icon(i)}</span> {t}</h3><p>{d}</p></div>' for n, (i, t, d) in enumerate(audiences)) + "</div>"
+    body = f"""<section class="hero wave-bottom">
   <div class="wrap hero-inner">
     <div>
-      <p class="eyebrow">PIRB-registered plumber &middot; Braamfontein, Johannesburg</p>
-      <h1>Plumber in Johannesburg for drains, leaks, geysers &amp; new builds</h1>
-      <p class="lead">{NAME} clears blocked drains, finds leaks, installs geysers and heat pumps, and fits complete plumbing in new and high-rise buildings across Johannesburg.</p>
+      <p class="eyebrow">PIRB registered &middot; Johannesburg</p>
+      <h1>Johannesburg plumbers for <span class="hl">drains, leaks &amp; geysers</span> &mdash; sorted!</h1>
+      <p class="lead">{NAME} clears blocked drains, finds hidden leaks, fixes and installs geysers and heat pumps, and plumbs new and high-rise buildings across Johannesburg.</p>
       <div class="cta-row">{btn_quote()}{btn_wa()}</div>
-      <ul class="chips"><li>{icon("shield", 16)} PIRB registered company</li><li>{icon("id", 16)} Licensed Plumber</li><li>{icon("file", 16)} COC issued</li></ul>
+      <ul class="chips"><li>{icon("shield", 16)} PIRB registered</li><li>{icon("id", 16)} Licensed plumber</li><li>{icon("file", 16)} COC issued</li></ul>
     </div>
-    <div class="hero-card">
-      <h2>Get your plumbing sorted</h2>
-      <p class="muted small" style="margin:0">Ask for {CONTACT_PERSON}.</p>
-      <ol>
-        <li><span><strong>Tell us about the job.</strong> Call, WhatsApp or use the form, and add a photo if you can.</span></li>
-        <li><span><strong>Get a quote.</strong> We'll tell you what's needed and what it will cost.</span></li>
-        <li><span><strong>Job done properly.</strong> Work by a licensed plumber, with a COC where required.</span></li>
-      </ol>
-      {btn_call(None, "")}
+    <div class="hero-art">
+      <div class="bubble">Leak? Blocked drain? Burst geyser? Call {CONTACT_PERSON.split()[0]}!</div>
+      {MASCOT}
     </div>
   </div>
 </section>
@@ -357,7 +354,7 @@ def build_home():
   </div>
 </section>
 
-<section class="section section-dark">
+<section class="section section-dark wave-bottom">
   <div class="wrap">
     <div class="section-head"><p class="eyebrow" style="color:var(--accent)">How it works</p><h2>Three simple steps</h2></div>
     <ol class="steps">
