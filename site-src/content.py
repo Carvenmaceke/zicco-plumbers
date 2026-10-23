@@ -465,7 +465,7 @@ AREAS = [
 HOME_FAQS = [
     ("Are you a registered plumber?", "Yes. Zicco Plumbers is a PIRB-registered company (no. " + PIRB_NO + ") and our plumber is licensed (licence " + LICENCE_NO + "). You can check PIRB registration at pirb.co.za."),
     ("Can you issue a plumbing COC?", "Yes. Our licensed plumber can sign Certificates of Compliance, for example after a geyser is installed or replaced."),
-    ("How do I get a quote?", "Fill in the quote form on this page, or send a WhatsApp message to " + PHONE_DISPLAY + " with a description of the job and a few photos. You can also call and ask for " + CONTACT_PERSON + "."),
+    ("How do I get a quote?", "Fill in the quote form on this page, or send a WhatsApp message to " + PHONE_DISPLAY + " with a description of the job and a few photos. You can also call us."),
     ("Which areas do you cover?", "We're based in Braamfontein and work across Johannesburg, including Sandton, Randburg, Fourways, Midrand and the Johannesburg CBD."),
     ("Do you work for contractors and building owners?", "Yes. We install plumbing on new construction sites and in high-rise buildings, and maintain plumbing for building owners, body corporates and student accommodation."),
     ("How much will my job cost?", "It depends on the job. Photos of the problem help us give you an accurate price. Send them on WhatsApp or attach one to the quote form."),
