@@ -63,7 +63,7 @@
   window.zpResetDemo = function () {
     load().then(function (m) {
       m.resetDemo();
-      try { localStorage.removeItem("zpdemo-seeded-v1"); localStorage.removeItem("zpdemo-session"); } catch (e) {}
+      try { localStorage.removeItem("zpdemo-seeded-v2"); localStorage.removeItem("zpdemo-session"); } catch (e) {}
       location.reload();
     });
   };

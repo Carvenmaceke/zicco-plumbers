@@ -10,7 +10,10 @@ STREET = "33 Jorissen Street, Geldenhuys Building"
 ADDRESS = "33 Jorissen Street, Geldenhuys Building, Braamfontein, Johannesburg, Gauteng"
 PIRB_NO = "72110"
 LICENCE_NO = "8610/19"
-UPDATED = "2026-10-22"
+UPDATED = "2026-10-23"
+# PIRB licence card: categories the licensed plumber may certify (COC), plus specialisation.
+LICENSED_CATEGORIES = ["Above ground drainage", "Below ground drainage", "Rainwater drainage", "Cold water", "Hot water"]
+LICENSED_SPECIALISATION = "Heat pumps"
 
 # Icons are simple stroked SVG paths (Feather-style), drawn at 24x24.
 ICONS = {
@@ -31,6 +34,10 @@ ICONS = {
     "home": '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
     "users": '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
     "crane": '<path d="M2 20h20M6 20V4l12 4M6 8h12M14 8v5"/><rect x="12" y="13" width="4" height="3"/>',
+    "stack": '<path d="M9 2v20M14 2v20"/><path d="M14 8l6-3M14 13l6-3"/><path d="M9 11H4"/>',
+    "ground": '<path d="M2 9h20"/><path d="M3 9l3-3M8 9l3-3M13 9l3-3M18 9l3-3"/><rect x="3" y="14" width="18" height="5" rx="2.5"/>',
+    "rain": '<line x1="16" y1="13" x2="16" y2="21"/><line x1="8" y1="13" x2="8" y2="21"/><line x1="12" y1="15" x2="12" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/>',
+    "tap": '<path d="M3 10h10a3 3 0 0 1 3 3v2"/><path d="M7 5h6M10 5v5"/><path d="M18 20a2 2 0 1 1-4 0c0-1.3 2-3.5 2-3.5s2 2.2 2 3.5z"/>',
     "menu": '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>',
 }
 
@@ -70,11 +77,15 @@ FORM_SERVICES = [
     "Subsoil drainage",
     "Water jetting",
     "Heat pumps / Geysers",
-    "Drain camera",
     "New building plumbing installation",
     "Water booster pump",
     "Metered showers",
     "Plumbing COC",
+    "Drain camera",
+    "Above-ground drainage",
+    "Below-ground drainage",
+    "Rainwater drainage",
+    "Cold water installation",
     "Other",
 ]
 
@@ -163,6 +174,69 @@ SERVICES = [
         "related": ["new-building-plumbing-installations", "blocked-drains-drain-cleaning", "drain-camera-inspection"],
     },
     {
+        "slug": "above-ground-drainage",
+        "name": "Above-ground drainage",
+        "icon": "stack",
+        "card": "Soil, waste and vent pipework for toilets, basins, showers, baths and kitchens, inside and outside the building, from homes to high-rise.",
+        "title": "Above-Ground Drainage Installation & Repairs Johannesburg | Zicco Plumbers",
+        "desc": "Above-ground drainage in Johannesburg: soil and waste pipes, stacks and vents for homes and buildings. Licensed for above-ground drainage COCs. Call +27 81 440 5778.",
+        "h1": "Above-ground drainage in Johannesburg",
+        "lead": "Above-ground drainage is all the soil, waste and vent pipework that carries water away from toilets, basins, showers, baths and kitchens to the drains below. Zicco Plumbers installs, replaces and repairs it, and is licensed to certify it.",
+        "img": "drain-wall",
+        "sections": [
+            ("What we install and repair", "<ul class=\"check-list\"><li>Soil and waste pipes for toilets, basins, showers, baths and sinks</li><li>Drainage stacks and branch pipes on multi-storey buildings</li><li>Vent pipes and air admittance valves that stop gurgling and smells</li><li>Kitchen and laundry waste connections</li><li>Replacing cracked, leaking or badly joined drain pipes</li><li>New drainage for renovations, extensions and new buildings</li></ul>"),
+            ("Signs of an above-ground drainage problem", "<ul><li>Drains that gurgle or empty slowly even after being cleared</li><li>Sewer smells inside the bathroom or kitchen</li><li>Damp or stains around waste pipes, or water on the floor under a basin</li><li>Leaks from the outside drain pipes on the wall</li></ul>"),
+            ("Licensed for above-ground drainage", "<p>Our plumber's PIRB licence covers <strong>above-ground drainage</strong>, so the work can be certified with a plumbing Certificate of Compliance when it's done.</p>"),
+        ],
+        "faqs": [
+            ("Do you do drainage on high-rise buildings?", "Yes. We install and repair drainage stacks and branch pipes on multi-storey and high-rise buildings."),
+            ("Can you certify the new drainage in my renovation?", "Yes. Above-ground drainage is one of the categories on our plumber's licence, so we can issue a COC for it."),
+        ],
+        "related": [],
+    },
+    {
+        "slug": "below-ground-drainage",
+        "name": "Below-ground drainage",
+        "icon": "ground",
+        "card": "Underground drain and sewer lines from the building to the municipal connection: new installations, replacements and repairs.",
+        "title": "Below-Ground Drainage & Sewer Lines Johannesburg | Zicco Plumbers",
+        "desc": "Below-ground drainage in Johannesburg: new sewer lines, broken and root-damaged drain replacement, manholes and gullies. Licensed for below-ground drainage COCs.",
+        "h1": "Below-ground drainage in Johannesburg",
+        "lead": "Below-ground drainage carries everything from the building to the municipal sewer. We lay new underground drain lines, and replace and repair pipes that are broken, sagging or full of roots.",
+        "img": "valves",
+        "sections": [
+            ("What we do", "<ul class=\"check-list\"><li>New underground drain and sewer lines for new buildings and extensions</li><li>Drainage laid in and under slabs before the concrete is poured</li><li>Replacing broken, collapsed or root-damaged drain pipes</li><li>Manholes, inspection eyes and rodding points</li><li>Gullies and yard drains</li><li>Connections to the municipal sewer</li></ul>"),
+            ("Finding the problem first", "<p>For drains that keep blocking, smell or cause sinking paving, a drain camera inspection shows exactly where the damage is, so we only dig where it's needed. Blockages can often be cleared with high-pressure water jetting before any digging.</p>"),
+            ("Licensed for below-ground drainage", "<p>Our plumber's PIRB licence covers <strong>below-ground drainage</strong>, so new and repaired drain lines can be certified with a plumbing COC.</p>"),
+        ],
+        "faqs": [
+            ("How do I know if my underground drain is broken?", "Common signs are drains that keep blocking, sewer smells outside, damp or sinking paving near a drain line, and very green patches in the garden. A camera inspection confirms it."),
+            ("Do you lay drainage on new building sites?", "Yes. We lay below-ground drainage on construction sites, including in-slab drainage before the pour."),
+        ],
+        "related": [],
+    },
+    {
+        "slug": "rainwater-drainage",
+        "name": "Rainwater drainage",
+        "icon": "rain",
+        "card": "Downpipes, rainwater pipes and stormwater drains that carry rain safely away from roofs, paving and foundations.",
+        "title": "Rainwater & Stormwater Drainage Johannesburg | Zicco Plumbers",
+        "desc": "Rainwater drainage in Johannesburg: downpipes, rainwater pipes, stormwater drains and flat-roof outlets. Licensed for rainwater drainage COCs. Call +27 81 440 5778.",
+        "h1": "Rainwater drainage in Johannesburg",
+        "lead": "Johannesburg's summer storms put a lot of water on roofs and paving in a short time. Rainwater drainage carries it safely away so it doesn't flood yards, damage walls or soak foundations.",
+        "img": "stack",
+        "sections": [
+            ("What we install and repair", "<ul class=\"check-list\"><li>Downpipes and rainwater pipes from roofs and gutters</li><li>Stormwater drains and channels in yards, driveways and paving</li><li>Flat-roof and balcony outlets</li><li>Rainwater drainage on new buildings and complexes</li><li>Repairing leaking, cracked or blocked rainwater pipes</li></ul>"),
+            ("Signs you need better rainwater drainage", "<ul><li>Water pooling against walls or at the front door when it rains</li><li>Damp walls and floors after storms</li><li>Overflowing downpipes or water running across paving</li><li>Erosion or sinking paving near downpipes</li></ul>"),
+            ("Keeping rainwater out of the sewer", "<p>Rainwater should drain to stormwater, not into the sewer system, which can overflow in heavy rain. Municipal by-laws generally don't allow it. We make sure rainwater goes where it should.</p>"),
+            ("Licensed for rainwater drainage", "<p>Our plumber's PIRB licence covers <strong>rainwater drainage</strong>, so the work can be certified with a plumbing COC.</p>"),
+        ],
+        "faqs": [
+            ("Is rainwater drainage the same as subsoil drainage?", "No. Rainwater drainage deals with rain coming off roofs and paving. Subsoil drainage removes water that has soaked into the ground around foundations and gardens."),
+        ],
+        "related": [],
+    },
+    {
         "slug": "high-pressure-water-jetting",
         "name": "High-pressure water jetting",
         "icon": "jet",
@@ -196,7 +270,7 @@ SERVICES = [
         "sections": [
             ("Geyser repairs and replacement", "<ul class=\"check-list\"><li>Burst or leaking geysers replaced</li><li>No hot water: element and thermostat faults</li><li>Leaking pressure control valves, safety valves and vacuum breakers</li><li>Drip trays and overflow pipes fitted correctly</li><li>New geyser installations in new builds and renovations</li></ul><p>If your geyser has burst, switch off the geyser at the electrical board and close the water supply to it, then call or WhatsApp us.</p>"),
             ("Hot water heat pumps", "<p>A heat pump heats water by taking heat from the surrounding air, much like an air conditioner in reverse. It typically uses around a third of the electricity of a standard geyser element to heat the same amount of water. We install heat pump systems and connect them to your existing or new geyser.</p><p>Heat pumps suit homes with high hot water use, blocks of flats, guest houses and student accommodation.</p>"),
-            ("COC for geyser work", "<p>Hot water installations must be done to standard and certified. Our licensed plumber (licence " + LICENCE_NO + ") can issue a <a href=\"/services/plumbing-coc-certificates/\">plumbing Certificate of Compliance</a>, which insurers usually ask for after a geyser replacement.</p>"),
+            ("COC for geyser work", "<p>Hot water installations must be done to standard and certified. Our plumber's PIRB licence (" + LICENCE_NO + ") covers <strong>hot water</strong>, with a <strong>specialisation in heat pumps</strong>, so we can issue the plumbing Certificate of Compliance that insurers usually ask for after a geyser replacement.</p>"),
         ],
         "faqs": [
             ("Do you repair geysers or only install them?", "Both. We repair geyser faults such as elements, thermostats and valves, and replace geysers that have burst or reached the end of their life."),
@@ -204,6 +278,27 @@ SERVICES = [
             ("Will I get a COC for my new geyser?", "Yes. Our licensed plumber can issue a Certificate of Compliance for the installation."),
         ],
         "related": ["plumbing-coc-certificates", "plumbing-maintenance-repairs", "leak-detection"],
+    },
+    {
+        "slug": "cold-water-installations",
+        "name": "Cold water installations",
+        "icon": "tap",
+        "card": "Water supply pipework from the meter to every tap: new supply lines, pipe replacement, stopcocks and pressure valves.",
+        "title": "Cold Water Supply Installation & Pipe Replacement Johannesburg | Zicco Plumbers",
+        "desc": "Cold water installations in Johannesburg: new water supply lines, old pipe replacement, stopcocks and pressure reducing valves. Licensed for cold water COCs.",
+        "h1": "Cold water installations in Johannesburg",
+        "lead": "Your cold water supply runs from the municipal meter to every tap, toilet and appliance. We install new supply pipework, replace old and leaking pipes, and fit the valves that control it.",
+        "img": "copper",
+        "sections": [
+            ("What we install", "<ul class=\"check-list\"><li>New water supply lines from the meter to the building</li><li>Replacing old galvanised or leaking pipes</li><li>Supply pipework for kitchens, bathrooms and extensions</li><li>Stopcocks, isolating valves and non-return valves</li><li>Pressure reducing valves where the supply pressure is too high</li><li>Water supply for new buildings and high-rise, including booster pumps</li></ul>"),
+            ("Signs your cold water supply needs work", "<ul><li>Rusty or discoloured water</li><li>Low or uneven water pressure</li><li>Leaks, damp walls or a water meter that keeps turning</li><li>No way to turn the water off to one part of the house</li></ul>"),
+            ("Licensed for cold water", "<p>Our plumber's PIRB licence covers <strong>cold water</strong> installations, so new and replaced supply pipework can be certified with a plumbing COC.</p>"),
+        ],
+        "faqs": [
+            ("Should I replace old galvanised pipes?", "Old galvanised steel pipes rust from the inside, which causes low pressure, discoloured water and leaks. Replacing them usually fixes all three."),
+            ("Can you fit a main stopcock so I can turn off the water?", "Yes. We fit main and isolating valves so the water can be shut off quickly in an emergency or for repairs."),
+        ],
+        "related": [],
     },
     {
         "slug": "drain-camera-inspection",
@@ -286,7 +381,7 @@ SERVICES = [
         "slug": "plumbing-coc-certificates",
         "name": "Plumbing COC certificates",
         "icon": "file",
-        "card": "Our licensed plumber can sign plumbing Certificates of Compliance for geysers, new installations and other plumbing work.",
+        "card": "Our licensed plumber can sign plumbing COCs for drainage, rainwater, cold water and hot water work, including heat pumps.",
         "title": "Plumbing Certificate of Compliance (COC) Johannesburg | Zicco Plumbers",
         "desc": "Plumbing COC in Johannesburg from a PIRB-registered company with a licensed plumber (licence 8610/19). Geysers, new installations and more. Call +27 81 440 5778.",
         "h1": "Plumbing Certificates of Compliance (COC)",
@@ -294,6 +389,7 @@ SERVICES = [
         "img": "geyser",
         "sections": [
             ("When you need a plumbing COC", "<ul class=\"check-list\"><li>After a geyser is installed or replaced (insurers usually ask for one)</li><li>When a heat pump or other hot water system is installed</li><li>On completion of plumbing in a new building or renovation</li><li>When a buyer, bank or insurer asks for one</li></ul>"),
+            ("What we can certify", "<p>Our plumber's PIRB licence covers these categories, so we can issue plumbing COCs for work in:</p>" + "<ul class=\"check-list\">" + "".join(f"<li>{c}</li>" for c in LICENSED_CATEGORIES) + f"<li>Specialisation: {LICENSED_SPECIALISATION}</li></ul>"),
             ("Registered and licensed", "<p>Zicco Plumbers is a <strong>PIRB-registered company, no. " + PIRB_NO + "</strong>, and our plumber holds <strong>licence " + LICENCE_NO + "</strong>. You can check PIRB registrations at <a href=\"https://www.pirb.co.za\" rel=\"noopener\">pirb.co.za</a>. Only licensed plumbers can issue a PIRB Certificate of Compliance.</p>"),
             ("Getting a COC", "<p>Tell us what the COC is for when you call or WhatsApp. If the existing plumbing needs work before it can be certified, we'll tell you what is required.</p>"),
         ],

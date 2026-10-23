@@ -36,7 +36,7 @@ export async function handle(url, init) {
 }
 
 // ---------- sample data ----------
-const SEEDED = "zpdemo-seeded-v1";
+const SEEDED = "zpdemo-seeded-v2";
 let seeding = null;
 
 async function call(path, method = "GET", body) {
@@ -61,6 +61,8 @@ const day = (n) => { const d = new Date(Date.now() + 2 * 3600e3 + n * 864e5); re
 export function seed() {
   try { if (localStorage.getItem(SEEDED)) return Promise.resolve(); } catch { return Promise.resolve(); }
   seeding ||= (async () => {
+    // Visitors with sample data from an older version of the demo start fresh.
+    try { if (localStorage.getItem("zpdemo-seeded-v1")) { resetDemo(); localStorage.removeItem("zpdemo-seeded-v1"); } } catch {}
     try { localStorage.setItem(SEEDED, "1"); } catch {}
     const a = await call("/api/tickets", "POST", form({ name: "Sipho", surname: "Mokoena", email: "sipho@example.com", phone: "082 111 2233", location: "Bryanston, Sandton", message: "Geyser is leaking from the bottom and there's no hot water." }, ["Heat pumps / Geysers"]));
     const b = await call("/api/tickets", "POST", form({ name: "Naledi", surname: "Khumalo", email: "naledi@example.com", phone: "071 444 5566", location: "Ferndale, Randburg", message: "Outside drain keeps blocking. Big tree near the drain." }, ["Drains (blocked drain, drain cleaning)", "Drain camera"]));

@@ -31,11 +31,15 @@ export const SERVICES = [
   "Subsoil drainage",
   "Water jetting",
   "Heat pumps / Geysers",
-  "Drain camera",
   "New building plumbing installation",
   "Water booster pump",
   "Metered showers",
   "Plumbing COC",
+  "Drain camera",
+  "Above-ground drainage",
+  "Below-ground drainage",
+  "Rainwater drainage",
+  "Cold water installation",
   "Other",
 ];
 

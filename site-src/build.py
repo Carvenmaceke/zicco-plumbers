@@ -259,7 +259,7 @@ def quote_form(heading="Send us a message", intro=None, preselect=None, h_tag="h
 def trust_card():
     return f"""<div class="trust-card">
   <h3>Registered and licensed</h3>
-  <ul class="trust-list"><li><strong>PIRB registered company</strong>PIRB company number {PIRB_NO}</li><li><strong>Licensed Plumber</strong>Licence {LICENCE_NO}. Can sign Certificates of Compliance (COC).</li></ul>
+  <ul class="trust-list"><li><strong>PIRB registered company</strong>PIRB company number {PIRB_NO}</li><li><strong>Licensed Plumber</strong>Licence {LICENCE_NO}. Can sign Certificates of Compliance (COC).</li><li><strong>Licensed to certify</strong>{", ".join(LICENSED_CATEGORIES)}. Specialisation: {LICENSED_SPECIALISATION.lower()}.</li></ul>
   <p class="small">PIRB registration can be checked at <a href="https://www.pirb.co.za" rel="noopener">pirb.co.za</a>.</p>
 </div>"""
 
@@ -441,8 +441,9 @@ def build_home():
 
 def build_services_index():
     groups = [
-        ("Drains & leaks", ["blocked-drains-drain-cleaning", "high-pressure-water-jetting", "drain-camera-inspection", "leak-detection", "subsoil-drainage"]),
-        ("Repairs & hot water", ["plumbing-maintenance-repairs", "geyser-heat-pump-installation", "plumbing-coc-certificates"]),
+        ("Drains & leaks", ["blocked-drains-drain-cleaning", "high-pressure-water-jetting", "drain-camera-inspection", "leak-detection"]),
+        ("Drainage installations", ["above-ground-drainage", "below-ground-drainage", "rainwater-drainage", "subsoil-drainage"]),
+        ("Water supply, hot water & repairs", ["cold-water-installations", "geyser-heat-pump-installation", "plumbing-maintenance-repairs", "plumbing-coc-certificates"]),
         ("New buildings & high-rise", ["new-building-plumbing-installations", "water-booster-pumps", "metered-showers"]),
     ]
     sections = "".join(
@@ -452,7 +453,7 @@ def build_services_index():
     body = page_hero(trail, "Plumbing services in Johannesburg",
                      f"Everything {NAME} does, from blocked drains and leak detection to geysers, heat pumps and complete plumbing for new buildings.") + sections + cta_band()
     page("/services/", "Plumbing Services Johannesburg | Zicco Plumbers",
-         "All plumbing services from Zicco Plumbers in Johannesburg: blocked drains, water jetting, drain cameras, leak detection, geysers, heat pumps, booster pumps and new builds.",
+         "All plumbing services from Zicco Plumbers in Johannesburg: blocked drains, water jetting, drain cameras, leak detection, drainage, geysers, heat pumps, booster pumps and new builds.",
          body, [breadcrumb_schema(trail)])
 
 
@@ -473,7 +474,9 @@ def build_service(s):
         "leak-detection": "Leak detection", "subsoil-drainage": "Subsoil drainage", "high-pressure-water-jetting": "Water jetting",
         "geyser-heat-pump-installation": "Heat pumps / Geysers", "drain-camera-inspection": "Drain camera",
         "new-building-plumbing-installations": "New building plumbing installation", "water-booster-pumps": "Water booster pump",
-        "metered-showers": "Metered showers", "plumbing-coc-certificates": "Plumbing COC"}[s["slug"]]
+        "metered-showers": "Metered showers", "plumbing-coc-certificates": "Plumbing COC",
+        "above-ground-drainage": "Above-ground drainage", "below-ground-drainage": "Below-ground drainage",
+        "rainwater-drainage": "Rainwater drainage", "cold-water-installations": "Cold water installation"}[s["slug"]]
     # Keep the page about this one service: mentions of other services stay as plain text, not links.
     secs = "".join(f"<h2>{h}</h2>{unlink_services(html)}" for h, html in s["sections"])
     fig = f'<figure class="figure-wide">{pic(s["img"], "(min-width: 980px) 720px, 100vw")}</figure>' if s.get("img") else ""
