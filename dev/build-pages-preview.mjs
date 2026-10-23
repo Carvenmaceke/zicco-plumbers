@@ -17,7 +17,7 @@ const VERSION = (process.env.GITHUB_SHA || Date.now().toString(36)).slice(0, 10)
 const base = ("/" + String(process.argv[3] || "/").replace(/^\/+|\/+$/g, "") + "/").replace(/^\/\/$/, "/");
 
 // Top-level paths of the site. Anything else (e.g. /api/) is left alone.
-const TOP = ["images", "js", "admin", "styles.css", "favicon.svg", "og.jpg", "services", "areas", "projects", "about", "faq",
+const TOP = ["images", "js", "admin", "plumber", "styles.css", "favicon.svg", "og.jpg", "services", "areas", "projects", "about", "faq",
   "contact", "quote", "privacy", "thank-you", "track", "doc", "sitemap.xml", "404.html"];
 const topRe = new RegExp(`(?<=["'(\\s,=])/(?=(?:${TOP.map((t) => t.replace(".", "\\.")).join("|")})(?:[/"'?#\\s,)]|$))`, "g");
 const homeRe = /(?<=href=["'])\/(?=["'])/g; // href="/" links to the home page (HTML only)

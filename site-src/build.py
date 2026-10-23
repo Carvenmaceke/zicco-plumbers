@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from content import *  # noqa
 
 SRC, OUT = sys.argv[1], sys.argv[2]
-CSS_V = "8"
+CSS_V = "9"
 IMG_DIMS = {}
 
 
@@ -24,6 +24,7 @@ def icon(name, size=24, sw=2):
 PHONE_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.6 15.6 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.2 2.2Z"/></svg>'
 WA_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.2c-.2.6-1.2 1.2-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.6-1.1-4.3-3.8-4.4-4-.1-.2-1.1-1.4-1.1-2.7s.7-1.9.9-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.4l.8 2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.5 1.5.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.6.4 0 .1 0 .7-.2 1.3Z"/></svg>'
 QUOTE_SVG = icon("file", 18)
+PERSON = f'<a class="person-link" href="{PROFILE_PATH}">{CONTACT_PERSON}</a>'
 LOGO = '<svg class="brand-mark" width="42" height="42" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="zpg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a8fb0"/><stop offset="1" stop-color="#0e3442"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#zpg)"/><path d="M32 13c6 8 10 13.5 10 18.5a10 10 0 0 1-20 0C22 26.5 26 21 32 13z" fill="#f2a93b"/><text x="32" y="56" font-family="Plus Jakarta Sans, Arial, sans-serif" font-size="13" font-weight="800" text-anchor="middle" fill="#fff" letter-spacing="1">ZP</text></svg>'
 
 
@@ -248,12 +249,22 @@ def quote_form(heading="Send us a message", intro=None, preselect=None, h_tag="h
 </div>"""
 
 
+def licence_chips():
+    return "".join(f'<li>{icon(ic, 16)}<span>{name}</span></li>' for name, ic, _ in LICENSED_DETAIL) + \
+        f'<li class="spec">{icon("jet", 16)}<span>{LICENSED_SPECIALISATION} (specialisation)</span></li>'
+
+
 def trust_card():
-    return f"""<div class="trust-card">
-  <h3>Registered and licensed</h3>
-  <ul class="trust-list"><li><strong>PIRB registered company</strong>PIRB company number {PIRB_NO}</li><li><strong>Licensed Plumber</strong>Licence {LICENCE_NO}. Can sign Certificates of Compliance (COC).</li><li><strong>Licensed to certify</strong>{", ".join(LICENSED_CATEGORIES)}. Specialisation: {LICENSED_SPECIALISATION.lower()}.</li></ul>
-  <p class="small">PIRB registration can be checked at <a href="https://www.pirb.co.za" rel="noopener">pirb.co.za</a>.</p>
-</div>"""
+    initials = "".join(w[0] for w in CONTACT_PERSON.split()[:2])
+    return f"""<a class="plumber-card" href="{PROFILE_PATH}">
+  <div class="pc-top">
+    <span class="pc-avatar" aria-hidden="true">{initials}</span>
+    <div><span class="pc-badge">{icon("shield", 14)} Licensed plumber</span><strong class="pc-name">{CONTACT_PERSON}</strong><span class="pc-role">PIRB licence {LICENCE_NO} &middot; {NAME}</span></div>
+  </div>
+  <p class="pc-label">Licensed to issue plumbing COCs for</p>
+  <ul class="pc-chips">{licence_chips()}</ul>
+  <span class="pc-cta">View licence &amp; profile &rarr;</span>
+</a>"""
 
 
 def service_cards(services=None):
@@ -266,7 +277,7 @@ def service_cards(services=None):
 
 
 def cta_band(title="Need a plumber in Johannesburg?", text=None):
-    text = text or f"Call or WhatsApp {PHONE_DISPLAY} and ask for {CONTACT_PERSON}, or send us the details online."
+    text = text or f"Call or WhatsApp {PHONE_DISPLAY} and ask for {PERSON}, or send us the details online."
     return f"""<section class="section"><div class="wrap"><div class="cta-band reveal">
   <div><h2>{title}</h2><p>{text}</p></div>
   <div class="cta-row">{btn_quote()}</div>
@@ -295,7 +306,7 @@ def aside(wa_text=None, related=None, quote_href="/quote/"):
         rel = '<div class="aside-card"><h2>Related services</h2><ul class="aside-links">' + "".join(
             f'<li><a href="/services/{r}/">{SERVICE_BY_SLUG[r]["name"]}</a></li>' for r in related) + '<li><a href="/services/">All services &rarr;</a></li></ul></div>'
     return f"""<aside><div class="aside-sticky">
-  <div class="aside-card"><h2>Get a quote</h2><p class="muted small">Send a photo of the problem on WhatsApp for the quickest answer. Ask for {CONTACT_PERSON}.</p>
+  <div class="aside-card"><h2>Get a quote</h2><p class="muted small">Send a photo of the problem on WhatsApp for the quickest answer. Ask for {PERSON}.</p>
     {btn_quote("Request a quote online", "", quote_href)}</div>
   <div class="aside-card"><h2>Registered &amp; licensed</h2><ul class="check-list small" style="margin:0"><li>PIRB company no. {PIRB_NO}</li><li>Licensed plumber, licence {LICENCE_NO}</li><li>Can sign plumbing COCs</li></ul></div>
   {rel}
@@ -327,7 +338,7 @@ def build_home():
     </div>
     <div class="hero-card">
       <h2>Get your plumbing sorted</h2>
-      <p class="muted small" style="margin:0">Ask for {CONTACT_PERSON}.</p>
+      <p class="muted small" style="margin:0">Ask for {PERSON}.</p>
       <ol>
         <li><span><strong>Tell us about the job.</strong> Call, WhatsApp or use the form, and add a photo if you can.</span></li>
         <li><span><strong>Get a clear quote.</strong> We explain what's needed and what it will cost.</span></li>
@@ -384,7 +395,7 @@ def build_home():
       <p class="eyebrow">About us</p>
       <h2>About {NAME}</h2>
       <p>{NAME} is a plumbing company based in Braamfontein, Johannesburg. We install plumbing on new construction sites and in high-rise buildings, fit hot water heat pumps, geysers, water booster pumps and metered showers, and handle drains, leaks and repairs for homes and buildings.</p>
-      <p>We're a PIRB-registered company with a licensed plumber who can sign Certificates of Compliance, so your work is done to standard and certified. When you call, ask for {CONTACT_PERSON}.</p>
+      <p>We're a PIRB-registered company with a licensed plumber who can sign Certificates of Compliance, so your work is done to standard and certified. When you call, ask for {PERSON}.</p>
       <p><a href="/about/">More about us &rarr;</a></p>
     </div>
     {trust_card()}
@@ -411,7 +422,7 @@ def build_home():
     <div>
       <p class="eyebrow">Contact</p>
       <h2>Request a quote</h2>
-      <p>Call or send a WhatsApp message and ask for {CONTACT_PERSON}, or fill in the form and we'll get back to you.</p>
+      <p>Call or send a WhatsApp message and ask for {PERSON}, or fill in the form and we'll get back to you.</p>
       <dl class="details"><dt>Based in</dt><dd>{AREA}</dd><dt>Phone &amp; WhatsApp</dt><dd><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></dd></dl>
     </div>
     {quote_form()}
@@ -501,7 +512,7 @@ def build_area(a):
     focus = [SERVICE_BY_SLUG[s] for s in a["focus"]]
     others = ", ".join(f'<a href="/areas/{o["slug"]}/">{o["name"]}</a>' for o in AREAS if o is not a)
     body = page_hero(trail, f"Plumber in {a['name']}",
-                     f"PIRB-registered plumbing company serving {a['name']}: drains, leaks, geysers, heat pumps and building plumbing. Ask for {CONTACT_PERSON}.",
+                     f"PIRB-registered plumbing company serving {a['name']}: drains, leaks, geysers, heat pumps and building plumbing. Ask for {PERSON}.",
                      wa_text=wa_text) + f"""
 <section class="section"><div class="wrap content-grid">
   <article class="prose">
@@ -541,7 +552,7 @@ def build_about():
   <div class="prose">
     <h2>Who we are</h2>
     <p>{NAME} is a plumbing company based in {AREA}. We install plumbing on new construction sites and in high-rise buildings, and fit hot water heat pumps, geysers, water booster pumps and metered showers. We also clear blocked drains, carry out water jetting and drain camera inspections, find leaks, install subsoil drainage and handle plumbing repairs and maintenance.</p>
-    <p>When you call or WhatsApp {PHONE_DISPLAY}, ask for {CONTACT_PERSON}.</p>
+    <p>When you call or WhatsApp {PHONE_DISPLAY}, ask for {PERSON}.</p>
     <h2>What you can expect</h2>
     <ul class="check-list"><li>A PIRB-registered company (no. {PIRB_NO})</li><li>A licensed plumber (licence {LICENCE_NO}) who can sign plumbing COCs</li><li>Experience on construction sites and in high-rise buildings</li><li>A quote before work starts</li></ul>
     <h2>Who we work for</h2>
@@ -566,16 +577,64 @@ def build_faq():
 
 def build_contact():
     trail = [("Home", "/"), ("Contact", "/contact/")]
-    body = page_hero(trail, f"Contact {NAME}", f"Call or WhatsApp {PHONE_DISPLAY} and ask for {CONTACT_PERSON}, or send us a message below.") + f"""
+    body = page_hero(trail, f"Contact {NAME}", f"Call or WhatsApp {PHONE_DISPLAY} and ask for {PERSON}, or send us a message below.") + f"""
 <section class="section"><div class="wrap two-col">
   <div>
     <h2>Get in touch</h2>
-    <dl class="details"><dt>Phone &amp; WhatsApp</dt><dd><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></dd><dt>Ask for</dt><dd>{CONTACT_PERSON}</dd><dt>Based in</dt><dd>{AREA}</dd><dt>Registration</dt><dd>PIRB company no. {PIRB_NO} &middot; Licence {LICENCE_NO}</dd></dl>
+    <dl class="details"><dt>Phone &amp; WhatsApp</dt><dd><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></dd><dt>Ask for</dt><dd>{PERSON}</dd><dt>Based in</dt><dd>{AREA}</dd><dt>Registration</dt><dd>PIRB company no. {PIRB_NO} &middot; Licence {LICENCE_NO}</dd></dl>
   </div>
   {quote_form()}
 </div></section>"""
     page("/contact/", "Contact Zicco Plumbers | Plumber in Braamfontein, Johannesburg",
          f"Contact Zicco Plumbers: call or WhatsApp {PHONE_DISPLAY}. Based in {AREA}, working across Johannesburg.", body, [business_schema(), breadcrumb_schema(trail)])
+
+
+def build_profile():
+    path = PROFILE_PATH
+    trail = [("Home", "/"), ("About", "/about/"), (CONTACT_PERSON, path)]
+    initials = "".join(w[0] for w in CONTACT_PERSON.split()[:2])
+    cats = "".join(
+        f'<li><a href="/services/{slug}/">{icon(ic, 20)}<span>{name}</span></a></li>' for name, ic, slug in LICENSED_DETAIL)
+    body = page_hero(trail, CONTACT_PERSON, f"Licensed plumber at {NAME}, registered with the PIRB (Plumbing Industry Registration Board).") + f"""
+<section class="section"><div class="wrap content-grid">
+  <article>
+    <div class="licence">
+      <div class="lc-head">
+        <span class="lc-avatar" aria-hidden="true">{initials}</span>
+        <div><span class="lc-kicker">PIRB licensed plumber</span><h2>{CONTACT_PERSON}</h2><span class="lc-verified">{icon("shield", 15)} Licence {LICENCE_NO}</span></div>
+      </div>
+      <dl class="lc-facts">
+        <div><dt>Licence number</dt><dd>{LICENCE_NO}</dd></div>
+        <div><dt>Current employer</dt><dd>{NAME}</dd></div>
+        <div><dt>Company registration</dt><dd>PIRB company no. {PIRB_NO}</dd></div>
+        <div><dt>Certificates of Compliance</dt><dd>Can sign plumbing COCs</dd></div>
+      </dl>
+      <h3>Licensed to issue plumbing COCs for</h3>
+      <ul class="lc-cats">{cats}</ul>
+      <div class="lc-spec">{icon("jet", 20)}<div><span>Specialisation</span><strong>{LICENSED_SPECIALISATION}</strong></div></div>
+    </div>
+    <div class="prose" style="margin-top:36px">
+      <h2>What this means for you</h2>
+      <ul class="check-list">
+        <li>Your work is done by a plumber licensed by the PIRB, the industry body for plumbing in South Africa.</li>
+        <li>Work in the categories above can be certified with a plumbing Certificate of Compliance (COC).</li>
+        <li>Heat pump installations are a specialisation, so they're handled and certified properly.</li>
+      </ul>
+      <h2>Check the registration yourself</h2>
+      <p>PIRB registrations can be checked at <a href="https://www.pirb.co.za" rel="noopener" target="_blank">pirb.co.za</a> using licence number {LICENCE_NO} or company number {PIRB_NO}.</p>
+    </div>
+  </article>
+  <aside><div class="aside-sticky">
+    <div class="aside-card"><h2>Work with {CONTACT_PERSON.split()[0]}</h2><p class="muted small">Tell us about your job and we'll get back to you with a quote.</p>{btn_quote("Request a quote", "")}</div>
+  </div></aside>
+</div></section>"""
+    person = {"@context": "https://schema.org", "@type": "Person", "name": CONTACT_PERSON, "jobTitle": "Licensed Plumber",
+              "worksFor": {"@id": BUSINESS_ID}, "url": SITE + path,
+              "hasCredential": {"@type": "EducationalOccupationalCredential", "credentialCategory": "PIRB Licensed Plumber", "identifier": LICENCE_NO},
+              "knowsAbout": [n for n, _, _ in LICENSED_DETAIL] + [LICENSED_SPECIALISATION]}
+    page(path, f"{CONTACT_PERSON}, Licensed Plumber | {NAME}",
+         f"{CONTACT_PERSON} is a PIRB licensed plumber (licence {LICENCE_NO}) at {NAME}, licensed for drainage, rainwater, cold and hot water COCs, specialising in heat pumps.",
+         body, [person, breadcrumb_schema(trail)])
 
 
 def build_quote():
@@ -584,7 +643,7 @@ def build_quote():
   <div>{crumbs_html(trail)}<h1>Request a quote</h1>
     <p class="lead">Tell us what you need and where you are, and we'll get back to you. A photo of the problem helps us quote accurately.</p>
     <ul class="check-list"><li>PIRB-registered company no. {PIRB_NO}</li><li>Licensed plumber, licence {LICENCE_NO}</li><li>Plumbing COCs issued</li></ul>
-    <p>Rather talk to someone? Call or WhatsApp <a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a> and ask for {CONTACT_PERSON}.</p>
+    <p>Rather talk to someone? Call or WhatsApp <a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a> and ask for {PERSON}.</p>
   </div>
   {quote_form("Send us a message")}
 </div></section>"""
@@ -674,7 +733,7 @@ def build_static():
         shutil.copy2(f"{here}/{js}", f"{OUT}/js/{js}")
     shutil.copytree(f"{here}/admin", f"{OUT}/admin")
     paths = ["/", "/services/"] + [f"/services/{s['slug']}/" for s in SERVICES] + ["/areas/"] + \
-        [f"/areas/{a['slug']}/" for a in AREAS] + ["/projects/", "/about/", "/faq/", "/contact/", "/quote/", "/privacy/"]
+        [f"/areas/{a['slug']}/" for a in AREAS] + ["/projects/", "/about/", PROFILE_PATH, "/faq/", "/contact/", "/quote/", "/privacy/"]
     urls = "\n".join(f"  <url><loc>{SITE}{p}</loc><lastmod>{UPDATED}</lastmod></url>" for p in paths)
     with open(f"{OUT}/sitemap.xml", "w") as f:
         f.write(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}\n</urlset>\n')
@@ -692,6 +751,6 @@ if __name__ == "__main__":
         build_service(s)
     for a in AREAS:
         build_area(a)
-    build_projects(); build_about(); build_faq(); build_contact(); build_quote(); build_thanks(); build_track(); build_doc(); build_privacy(); build_404()
+    build_projects(); build_about(); build_faq(); build_contact(); build_profile(); build_quote(); build_thanks(); build_track(); build_doc(); build_privacy(); build_404()
     build_static()
     print("built", sum(len(fs) for _, _, fs in os.walk(OUT)), "files")

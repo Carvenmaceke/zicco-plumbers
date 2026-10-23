@@ -14,6 +14,15 @@ UPDATED = "2026-10-23"
 # PIRB licence card: categories the licensed plumber may certify (COC), plus specialisation.
 LICENSED_CATEGORIES = ["Above ground drainage", "Below ground drainage", "Rainwater drainage", "Cold water", "Hot water"]
 LICENSED_SPECIALISATION = "Heat pumps"
+# Same categories with an icon and the service page that covers each one.
+LICENSED_DETAIL = [
+    ("Above ground drainage", "stack", "above-ground-drainage"),
+    ("Below ground drainage", "ground", "below-ground-drainage"),
+    ("Rainwater drainage", "rain", "rainwater-drainage"),
+    ("Cold water", "tap", "cold-water-installations"),
+    ("Hot water", "thermo", "geyser-heat-pump-installation"),
+]
+PROFILE_PATH = "/plumber/ntsikelelo-mpayipeli/"
 
 # Icons are simple stroked SVG paths (Feather-style), drawn at 24x24.
 ICONS = {

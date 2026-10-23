@@ -425,3 +425,49 @@ fieldset { min-width: 0; }
 .field-label { display: block; font-weight: 600; font-size: .92rem; margin-bottom: 6px; }
 .fixed-service { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: var(--tint); border: 1.5px solid var(--brand); font-weight: 700; color: var(--brand-dark); }
 .fixed-service svg { color: var(--brand); flex: none; }
+
+/* Link to the plumber's profile wherever his name appears */
+.person-link { color: inherit; font-weight: 600; text-decoration: underline; text-decoration-style: dotted; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.person-link:hover { color: var(--accent); }
+
+/* "Meet your licensed plumber" card */
+.plumber-card { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 26px; box-shadow: var(--shadow); text-decoration: none; color: var(--ink); position: relative; overflow: hidden; transition: transform .25s, box-shadow .25s; align-self: start; }
+.plumber-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg, var(--accent), var(--teal)); }
+.plumber-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); color: var(--ink); }
+.pc-top { display: flex; align-items: center; gap: 16px; }
+.pc-avatar, .lc-avatar { flex: none; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(140deg, var(--teal), var(--brand-dark)); color: #fff; font-family: var(--head); font-weight: 800; letter-spacing: .02em; }
+.pc-avatar { width: 62px; height: 62px; font-size: 1.3rem; }
+.pc-badge, .lc-verified { display: inline-flex; align-items: center; gap: 6px; font-size: .76rem; font-weight: 700; color: #145c37; background: #e2f5ea; border-radius: 999px; padding: 3px 10px; }
+.pc-name { display: block; font-family: var(--head); font-size: 1.25rem; font-weight: 800; margin: 6px 0 2px; }
+.pc-role { display: block; font-size: .88rem; color: var(--muted); }
+.pc-label { margin: 18px 0 8px; font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--brand); }
+.pc-chips, .lc-cats { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.pc-chips li { display: inline-flex; align-items: center; gap: 6px; background: var(--tint); color: var(--brand-dark); border-radius: 999px; padding: 5px 12px; font-size: .84rem; font-weight: 600; }
+.pc-chips li.spec { background: #fff3df; color: #7a4a06; }
+.pc-chips svg { color: var(--brand); }
+.pc-chips li.spec svg { color: var(--accent-dark); }
+.pc-cta { display: inline-flex; margin-top: 18px; font-weight: 700; color: var(--brand); }
+.plumber-card:hover .pc-cta { color: var(--teal); }
+
+/* Profile page: digital licence card */
+.licence { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow-lg); overflow: hidden; position: relative; }
+.licence::after { content: "LICENSED PLUMBER"; position: absolute; right: 0; top: 0; bottom: 0; width: 44px; display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; transform: rotate(180deg); background: linear-gradient(var(--accent), var(--accent-dark)); color: #241703; font-family: var(--head); font-weight: 800; letter-spacing: .2em; font-size: .78rem; }
+.lc-head { display: flex; align-items: center; gap: 18px; padding: 28px 72px 24px 28px; background: linear-gradient(120deg, var(--brand-dark), var(--brand)); color: #fff; }
+.lc-avatar { width: 78px; height: 78px; font-size: 1.6rem; background: rgba(255,255,255,.14); border: 2px solid rgba(255,255,255,.35); }
+.lc-kicker { display: block; font-size: .74rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #cfe6ee; }
+.lc-head h2 { color: #fff; margin: 4px 0 8px; font-size: clamp(1.5rem, 3.4vw, 2rem); }
+.lc-facts { display: grid; grid-template-columns: 1fr; gap: 0; margin: 0; padding: 8px 72px 8px 28px; }
+.lc-facts div { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.lc-facts dt { font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.lc-facts dd { margin: 2px 0 0; font-weight: 700; font-size: 1.05rem; }
+.licence h3 { margin: 22px 72px 12px 28px; font-size: 1rem; }
+.lc-cats { padding: 0 72px 0 28px; }
+.lc-cats a { display: inline-flex; align-items: center; gap: 8px; background: var(--tint); color: var(--brand-dark); border-radius: 12px; padding: 9px 14px; font-weight: 600; font-size: .93rem; text-decoration: none; transition: background .2s, color .2s; }
+.lc-cats a:hover { background: var(--brand); color: #fff; }
+.lc-cats a svg { color: var(--brand); }
+.lc-cats a:hover svg { color: #fff; }
+.lc-spec { display: flex; align-items: center; gap: 12px; margin: 18px 72px 28px 28px; padding: 14px 16px; border-radius: 14px; background: #fff7e8; border: 1px solid #f6d79e; color: #7a4a06; }
+.lc-spec span { display: block; font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.lc-spec strong { font-size: 1.05rem; color: var(--ink); }
+@media (min-width: 640px) { .lc-facts { grid-template-columns: 1fr 1fr; column-gap: 28px; } }
+@media (max-width: 520px) { .licence::after { width: 30px; font-size: .62rem; } .lc-head, .lc-facts, .lc-cats { padding-right: 46px; } .licence h3, .lc-spec { margin-right: 46px; } .lc-head { flex-direction: column; align-items: flex-start; } }
