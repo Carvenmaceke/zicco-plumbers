@@ -265,7 +265,11 @@ fieldset { min-width: 0; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 6px 22px; font-weight: 500; }
 .legal { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.1); font-size: .8rem; display: flex; flex-wrap: wrap; gap: 6px 18px; color: rgba(255,255,255,.55); }
 .legal a { color: rgba(255,255,255,.7); }
-@media (min-width: 980px) { .footer-main, .legal { padding-right: 200px; } } /* keep clear of the floating Call/WhatsApp buttons */
+@media (min-width: 980px) { .footer-main { padding-right: 200px; } } /* keep clear of the floating Call/WhatsApp buttons */
+.legal { justify-content: center; }
+.legal .axe-credit { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border: 1px solid rgba(242,169,59,.45); border-radius: 999px; color: rgba(255,255,255,.85); font-size: .9rem; background: rgba(242,169,59,.08); transition: background .2s, border-color .2s; }
+.legal .axe-credit strong { color: var(--accent); font-weight: 700; }
+.legal .axe-credit:hover { background: rgba(242,169,59,.18); border-color: var(--accent); color: #fff; }
 
 /* Sticky contact buttons */
 .sticky-contact {
@@ -472,5 +476,3 @@ fieldset { min-width: 0; }
 @media (min-width: 640px) { .lc-facts { grid-template-columns: 1fr 1fr; column-gap: 28px; } }
 @media (max-width: 520px) { .licence::after { width: 30px; font-size: .62rem; } .lc-head, .lc-facts, .lc-cats { padding-right: 46px; } .licence h3, .lc-spec { margin-right: 46px; } .lc-head { flex-direction: column; align-items: flex-start; } }
 
-.legal .axe-credit { color: var(--accent); font-weight: 600; }
-.legal .axe-credit:hover { color: #fff; }

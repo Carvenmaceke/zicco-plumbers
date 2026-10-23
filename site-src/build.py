@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from content import *  # noqa
 
 SRC, OUT = sys.argv[1], sys.argv[2]
-CSS_V = "9"
+CSS_V = "10"
 IMG_DIMS = {}
 
 
@@ -99,18 +99,17 @@ def header(path):
 
 
 def footer():
-    links = "".join(f'<a href="{h}">{t}</a>' for h, t in [("/", "Home")] + NAV)
+    links = "".join(f'<a href="{h}">{t}</a>' for h, t in [("/", "Home")] + NAV + [("/privacy/", "Privacy")])
     return f"""<footer class="site-footer">
   <div class="wrap footer-main">
     <div class="footer-id">
       <a class="footer-brand" href="/">{NAME}</a>
-      <p>PIRB company no. {PIRB_NO} &middot; Licensed plumber {LICENCE_NO} &middot; Based in Braamfontein, Johannesburg</p>
+      <p>PIRB company no. {PIRB_NO} &middot; Licensed plumber {LICENCE_NO} &middot; Based in Braamfontein, Johannesburg &middot; &copy; 2026</p>
     </div>
     <nav class="footer-links" aria-label="Footer">{links}</nav>
   </div>
   <div class="wrap legal">
-    <span>&copy; 2026 {NAME} &middot; Website by <a class="axe-credit" href="https://axeconnect.co.za/" rel="noopener" target="_blank">Axe Connect</a></span>
-    <span><a href="/privacy/">Privacy</a> &middot; <a href="/sitemap.xml">Sitemap</a> &middot; <a href="https://www.plumberfinder.co.za/plumbers/zicco-plumbers-3315b48d" rel="noopener" target="_blank">Listed on PlumberFinder</a></span>
+    <a class="axe-credit" href="https://axeconnect.co.za/" rel="noopener" target="_blank">Website by <strong>Axe Connect</strong></a>
   </div>
 </footer>
 <div class="sticky-contact" role="group" aria-label="Contact {NAME}">
