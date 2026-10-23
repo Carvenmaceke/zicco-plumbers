@@ -6,4 +6,4 @@ Disallow: /doc/
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://ziccoplumbersgp.co.za/sitemap.xml
+Sitemap: https://www.ziccoplumbers.co.za/sitemap.xml

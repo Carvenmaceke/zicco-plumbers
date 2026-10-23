@@ -4,7 +4,7 @@
  * Set-up steps: apps-script/README.md
  */
 
-// >>> Paste your website's address between the quotes, e.g. "https://www.ziccoplumbersgp.co.za"
+// >>> Paste your website's address between the quotes, e.g. "https://www.ziccoplumbers.co.za"
 //     (links in emails point here). Leave it empty and the script learns it from the first visit.
 var WEBSITE_URL = "";
 
@@ -92,7 +92,7 @@ var ZP = (() => {
     whatsapp: "27814405778",
     address: "Braamfontein, Johannesburg"
   };
-  var SITE_URL = (globalThis.__ZP_ENV.SITE_URL || globalThis.__ZP_ENV.URL || "https://ziccoplumbersgp.co.za").replace(/\/$/, "");
+  var SITE_URL = (globalThis.__ZP_ENV.SITE_URL || globalThis.__ZP_ENV.URL || "https://www.ziccoplumbers.co.za").replace(/\/$/, "");
   var STATUSES = [
     { key: "new", label: "Received", customer: "We've received your request." },
     { key: "contacted", label: "Contacted", customer: "We've been in touch about your request." },
@@ -306,7 +306,7 @@ Call or WhatsApp <a href="tel:${BUSINESS.phoneTel}" style="color:#1d5c73">${esc(
       "PRODID:-//Zicco Plumbers//Tickets//EN",
       "METHOD:PUBLISH",
       "BEGIN:VEVENT",
-      `UID:${t.id}-${a.date}@ziccoplumbersgp.co.za`,
+      `UID:${t.id}-${a.date}@ziccoplumbers.co.za`,
       `DTSTAMP:${fmt(/* @__PURE__ */ new Date())}`,
       `DTSTART:${fmt(start)}`,
       `DTEND:${fmt(end)}`,
@@ -655,7 +655,7 @@ ${trackUrl(t)}`)}`,
     phone: BUSINESS.phone,
     email: "",
     address: "Braamfontein, Johannesburg",
-    website: "ziccoplumbersgp.co.za",
+    website: "www.ziccoplumbers.co.za",
     registration: "PIRB company no. 72110 \xB7 Licensed plumber 8610/19",
     vatNumber: "",
     vatRate: 0,
@@ -1367,7 +1367,7 @@ ${trackUrl(t)}`)}`,
     ScriptApp.newTrigger("dailyJob").timeBased().atHour(6).everyDays(1).inTimezone("Africa/Johannesburg").create();
     MailApp.getRemainingDailyQuota();
     const login = p2.getProperty("ADMIN_USERS").split(",")[0];
-    const msg = "Setup complete.\n\nDashboard login: " + login.replace(":", " / ") + "\nNotifications go to: " + p2.getProperty("BUSINESS_EMAIL") + "\nWebsite address: " + (SITE_URL.indexOf("ziccoplumbersgp.co.za") < 0 || p2.getProperty("SITE_URL") ? SITE_URL : "not set yet: paste it into WEBSITE_URL at the top of the script (or it's learned from the first visit)");
+    const msg = "Setup complete.\n\nDashboard login: " + login.replace(":", " / ") + "\nNotifications go to: " + p2.getProperty("BUSINESS_EMAIL") + "\nWebsite address: " + (SITE_URL.indexOf("ziccoplumbers.co.za") < 0 || p2.getProperty("SITE_URL") ? SITE_URL : "not set yet: paste it into WEBSITE_URL at the top of the script (or it's learned from the first visit)");
     console.log(msg);
     return msg;
   }

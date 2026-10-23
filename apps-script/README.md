@@ -18,7 +18,7 @@ Setting it up takes about 10 minutes.
 3. In the sheet, open **Extensions → Apps Script**.
 4. Delete everything in the editor, then paste the full contents of [`apps-script/Code.gs`](Code.gs).
 5. Near the top, paste your website's address between the quotes, for example:
-   `var WEBSITE_URL = "https://www.ziccoplumbersgp.co.za";`
+   `var WEBSITE_URL = "https://www.ziccoplumbers.co.za";`
    (Links in emails point here. If you leave it empty, the script learns it from the first visit.)
 6. Click **Save** (the disk icon).
 

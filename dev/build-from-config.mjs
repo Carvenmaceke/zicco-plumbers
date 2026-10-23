@@ -1,6 +1,6 @@
 // Builds the website using site.config.json:
 //   appsScriptUrl  the Google Apps Script web app URL (live site). Empty = demo with sample data.
-//   customDomain   e.g. "www.ziccoplumbersgp.co.za" when the site runs on its own domain (served from "/").
+//   customDomain   e.g. "www.ziccoplumbers.co.za" when the site runs on its own domain (served from "/").
 //   node dev/build-from-config.mjs [out-dir] [base-path]
 //   - GitHub Pages workflow:  node dev/build-from-config.mjs _site /<repo-name>/
 //   - any other host:         npm run build   (writes dist/ for the root of your domain)

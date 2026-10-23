@@ -9,7 +9,7 @@ export const DEFAULT_SETTINGS = {
   phone: BUSINESS.phone,
   email: "",
   address: "Braamfontein, Johannesburg",
-  website: "ziccoplumbersgp.co.za",
+  website: "www.ziccoplumbers.co.za",
   registration: "PIRB company no. 72110 · Licensed plumber 8610/19",
   vatNumber: "",
   vatRate: 0,

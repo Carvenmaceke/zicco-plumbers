@@ -114,7 +114,7 @@ export function appointmentIcs(t) {
   const e = (s) => String(s || "").replace(/[\\;,]/g, (c) => "\\" + c).replace(/\n/g, "\\n");
   return [
     "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Zicco Plumbers//Tickets//EN", "METHOD:PUBLISH", "BEGIN:VEVENT",
-    `UID:${t.id}-${a.date}@ziccoplumbersgp.co.za`, `DTSTAMP:${fmt(new Date())}`, `DTSTART:${fmt(start)}`, `DTEND:${fmt(end)}`,
+    `UID:${t.id}-${a.date}@ziccoplumbers.co.za`, `DTSTAMP:${fmt(new Date())}`, `DTSTART:${fmt(start)}`, `DTEND:${fmt(end)}`,
     `SUMMARY:${e(`Zicco Plumbers visit (${t.id})`)}`, `LOCATION:${e(t.customer.location)}`,
     `DESCRIPTION:${e(`${(t.services || []).join(", ")}${a.window ? `\nArrival window: ${a.window}` : ""}${a.note ? `\n${a.note}` : ""}\nQuestions? Call ${BUSINESS.phone}\n${trackUrl(t)}`)}`,
     "END:VEVENT", "END:VCALENDAR",

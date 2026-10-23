@@ -28,7 +28,7 @@ There's no server to pay for and nothing on Netlify.
    { "appsScriptUrl": "https://script.google.com/macros/s/XXXXXXXX/exec", "customDomain": "" }
    ```
 3. **Host the website.** Pick one:
-   - **GitHub Pages:** commit `site.config.json`. The workflow in `.github/workflows/pages.yml` publishes the live site on every push. For your own domain, set `customDomain` (e.g. `"www.ziccoplumbersgp.co.za"`) and point the domain's DNS at GitHub Pages.
+   - **GitHub Pages:** commit `site.config.json`. The workflow in `.github/workflows/pages.yml` publishes the live site on every push. For your own domain, set `customDomain` (e.g. `"www.ziccoplumbers.co.za"`) and point the domain's DNS at GitHub Pages.
    - **Any other host (cPanel, shared hosting…):** run `npm install && npm run build`, then upload everything in the `dist/` folder to your site's root (`public_html`).
 
 While `appsScriptUrl` is empty, the build is a **demo**. It has sample data, a demo banner and a backend that runs in each visitor's browser (dashboard login `admin` / `zicco-demo`), and nothing is saved online or emailed.

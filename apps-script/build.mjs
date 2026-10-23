@@ -31,7 +31,7 @@ const header = `/**
  * Set-up steps: apps-script/README.md
  */
 
-// >>> Paste your website's address between the quotes, e.g. "https://www.ziccoplumbersgp.co.za"
+// >>> Paste your website's address between the quotes, e.g. "https://www.ziccoplumbers.co.za"
 //     (links in emails point here). Leave it empty and the script learns it from the first visit.
 var WEBSITE_URL = "";
 

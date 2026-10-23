@@ -8,7 +8,7 @@ export const BUSINESS = {
   address: "Braamfontein, Johannesburg",
 };
 
-export const SITE_URL = (process.env.SITE_URL || process.env.URL || "https://ziccoplumbersgp.co.za").replace(/\/$/, "");
+export const SITE_URL = (process.env.SITE_URL || process.env.URL || "https://www.ziccoplumbers.co.za").replace(/\/$/, "");
 
 // Order matters: it's the order shown to customers on the tracking page.
 export const STATUSES = [

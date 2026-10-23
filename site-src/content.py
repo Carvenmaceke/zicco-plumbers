@@ -1,6 +1,6 @@
 """Site content. Facts here come from the live site; nothing about prices, hours or reviews is invented."""
 
-SITE = "https://ziccoplumbersgp.co.za"
+SITE = "https://www.ziccoplumbers.co.za"
 NAME = "Zicco Plumbers"
 PHONE_DISPLAY = "+27 81 440 5778"
 PHONE_TEL = "+27814405778"

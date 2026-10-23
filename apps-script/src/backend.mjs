@@ -623,7 +623,7 @@ export function setup() {
   MailApp.getRemainingDailyQuota();
   const login = p.getProperty("ADMIN_USERS").split(",")[0];
   const msg = "Setup complete.\n\nDashboard login: " + login.replace(":", " / ") + "\nNotifications go to: " + p.getProperty("BUSINESS_EMAIL") +
-    "\nWebsite address: " + (SITE_URL.indexOf("ziccoplumbersgp.co.za") < 0 || p.getProperty("SITE_URL") ? SITE_URL : "not set yet: paste it into WEBSITE_URL at the top of the script (or it's learned from the first visit)");
+    "\nWebsite address: " + (SITE_URL.indexOf("ziccoplumbers.co.za") < 0 || p.getProperty("SITE_URL") ? SITE_URL : "not set yet: paste it into WEBSITE_URL at the top of the script (or it's learned from the first visit)");
   console.log(msg);
   return msg;
 }
