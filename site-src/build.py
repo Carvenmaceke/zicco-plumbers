@@ -695,7 +695,7 @@ def build_privacy():
   <p>This is the website of {NAME}, based in {AREA}. This page explains what information this website handles, in line with South Africa&rsquo;s Protection of Personal Information Act (POPIA).</p>
   <h2>Quote and contact form</h2>
   <p>If you use the quote form, we receive the details you enter: your name, surname, contact number, email address (if given), location, the services you need, your message and any photo you attach. We use this only to respond to your request, quote for and carry out the work, and keep a record of the job.</p>
-  <p>Your request is stored securely with Netlify, the company that hosts this website, and we email you a private link where you can follow your request. Quotes and invoices we send you are stored the same way. Emails are sent through our email provider. We keep your details for as long as we need them for your job, our accounting records and the law.</p>
+  <p>Your request is stored in our business Google account (Google Sheets, with any photo in Google Drive), and we email you a private link where you can follow your request. Quotes and invoices we send you are stored the same way. Emails are sent from our Gmail account. We keep your details for as long as we need them for your job, our accounting records and the law.</p>
   <h2>When you call or WhatsApp us</h2>
   <p>If you call or send a WhatsApp message, {NAME} receives your phone number and whatever you tell us, so we can reply and quote for the job. Phone calls and WhatsApp messages also pass through your mobile network and Meta (WhatsApp), who handle them under their own privacy policies.</p>
   <h2>What we don't do</h2>
