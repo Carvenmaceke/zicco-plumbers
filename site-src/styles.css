@@ -471,3 +471,6 @@ fieldset { min-width: 0; }
 .lc-spec strong { font-size: 1.05rem; color: var(--ink); }
 @media (min-width: 640px) { .lc-facts { grid-template-columns: 1fr 1fr; column-gap: 28px; } }
 @media (max-width: 520px) { .licence::after { width: 30px; font-size: .62rem; } .lc-head, .lc-facts, .lc-cats { padding-right: 46px; } .licence h3, .lc-spec { margin-right: 46px; } .lc-head { flex-direction: column; align-items: flex-start; } }
+
+.legal .axe-credit { color: var(--accent); font-weight: 600; }
+.legal .axe-credit:hover { color: #fff; }

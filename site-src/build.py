@@ -109,7 +109,7 @@ def footer():
     <nav class="footer-links" aria-label="Footer">{links}</nav>
   </div>
   <div class="wrap legal">
-    <span>&copy; 2026 {NAME}</span>
+    <span>&copy; 2026 {NAME} &middot; Website by <a class="axe-credit" href="https://axeconnect.co.za/" rel="noopener" target="_blank">Axe Connect</a></span>
     <span><a href="/privacy/">Privacy</a> &middot; <a href="/sitemap.xml">Sitemap</a> &middot; <a href="https://www.plumberfinder.co.za/plumbers/zicco-plumbers-3315b48d" rel="noopener" target="_blank">Listed on PlumberFinder</a></span>
   </div>
 </footer>

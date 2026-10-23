@@ -106,10 +106,15 @@ export function sastDate(d = new Date()) {
   return new Date(d.getTime() + SAST_OFFSET_MS).toISOString().slice(0, 10);
 }
 
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 export function formatDate(dateStr) {
   if (!dateStr) return "";
   const [y, m, d] = dateStr.split("-").map(Number);
-  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-ZA", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  // Formatted by hand so it reads the same everywhere (Google Apps Script has limited locale support).
+  const wd = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+  return `${WEEKDAYS[wd]}, ${d} ${MONTHS[m - 1]} ${y}`;
 }
 
 export function formatAppointment(a) {
