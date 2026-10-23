@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from content import *  # noqa
 
 SRC, OUT = sys.argv[1], sys.argv[2]
-CSS_V = "7"
+CSS_V = "8"
 IMG_DIMS = {}
 
 
@@ -98,26 +98,19 @@ def header(path):
 </header>"""
 
 
-def footer(quote_href="/quote/"):
-    svc = "".join(f'<li><a href="/services/{s["slug"]}/">{s["name"]}</a></li>' for s in SERVICES[:7])
-    areas = "".join(f'<li><a href="/areas/{a["slug"]}/">Plumber in {a["name"]}</a></li>' for a in AREAS)
+def footer():
+    links = "".join(f'<a href="{h}">{t}</a>' for h, t in [("/", "Home")] + NAV)
     return f"""<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <span class="footer-brand">{NAME}</span>
-        <p>PIRB-registered plumbing company (no. {PIRB_NO}) with a licensed plumber (licence {LICENCE_NO}). Based in Braamfontein, working across Johannesburg.</p>
-        <a class="pf-badge" href="https://www.plumberfinder.co.za/plumbers/zicco-plumbers-3315b48d" rel="noopener" target="_blank">Listed on PlumberFinder</a>
-      </div>
-      <div><h2>Services</h2><ul>{svc}<li><a href="/services/">All services &rarr;</a></li></ul></div>
-      <div><h2>Areas</h2><ul>{areas}</ul></div>
-      <div><h2>Contact</h2><ul>
-        <li><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></li>
-        <li><a href="{escape(wa_link())}" rel="noopener">WhatsApp us</a></li>
-        <li><a href="{quote_href}">Request a quote</a></li>
-      </ul></div>
+  <div class="wrap footer-main">
+    <div class="footer-id">
+      <a class="footer-brand" href="/">{NAME}</a>
+      <p>PIRB company no. {PIRB_NO} &middot; Licensed plumber {LICENCE_NO} &middot; Based in Braamfontein, Johannesburg</p>
     </div>
-    <div class="legal"><span>&copy; 2026 {NAME}. All rights reserved.</span><span><a href="/privacy/">Privacy</a> &middot; <a href="/sitemap.xml">Sitemap</a></span></div>
+    <nav class="footer-links" aria-label="Footer">{links}</nav>
+  </div>
+  <div class="wrap legal">
+    <span>&copy; 2026 {NAME}</span>
+    <span><a href="/privacy/">Privacy</a> &middot; <a href="/sitemap.xml">Sitemap</a> &middot; <a href="https://www.plumberfinder.co.za/plumbers/zicco-plumbers-3315b48d" rel="noopener" target="_blank">Listed on PlumberFinder</a></span>
   </div>
 </footer>
 <div class="sticky-contact" role="group" aria-label="Contact {NAME}">
@@ -207,7 +200,7 @@ def page(path, title, desc, body, schemas=(), noindex=False, og_image="/og.jpg",
 <main id="main">
 {body}
 </main>
-{footer(quote_href)}
+{footer()}
 </body>
 </html>
 """
