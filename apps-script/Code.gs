@@ -790,7 +790,11 @@ ${trackUrl(t)}`)}`,
     }).filter(Boolean);
   }
   function sign(text) {
-    const key = props2().getProperty("SESSION_SECRET") || "";
+    let key = props2().getProperty("SESSION_SECRET");
+    if (!key) {
+      key = Utilities.getUuid() + Utilities.getUuid();
+      props2().setProperty("SESSION_SECRET", key);
+    }
     return Utilities.base64EncodeWebSafe(Utilities.computeHmacSha256Signature(text, key));
   }
   function makeToken(name) {

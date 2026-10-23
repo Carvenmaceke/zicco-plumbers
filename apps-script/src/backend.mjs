@@ -128,7 +128,9 @@ function users() {
 }
 
 function sign(text) {
-  const key = props().getProperty("SESSION_SECRET") || "";
+  let key = props().getProperty("SESSION_SECRET");
+  // Normally made by setup(); create it here too so a missing one can't block logins.
+  if (!key) { key = Utilities.getUuid() + Utilities.getUuid(); props().setProperty("SESSION_SECRET", key); }
   return Utilities.base64EncodeWebSafe(Utilities.computeHmacSha256Signature(text, key));
 }
 
