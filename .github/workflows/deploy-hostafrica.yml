@@ -1,0 +1,58 @@
+# Builds the live website and uploads it to Host Africa (DirectAdmin) by FTP whenever main changes,
+# so www.ziccoplumbers.co.za always matches this repository.
+# One-time setup: add these repository secrets in GitHub
+# (Settings -> Secrets and variables -> Actions -> New repository secret):
+#   FTP_SERVER    da40.host-ww.net (matches the server's SSL certificate)
+#   FTP_USERNAME  e.g. deploy@ziccoplumbers.co.za
+#   FTP_PASSWORD  that FTP account's password
+#   FTP_DIR       optional. Leave unset for an FTP account whose folder is the
+#                 site's public_html. For the main DirectAdmin login, set it to
+#                 domains/ziccoplumbers.co.za/public_html/
+name: Deploy to Host Africa
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-hostafrica
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
+    steps:
+      - name: Check FTP details are set
+        if: env.FTP_SERVER == ''
+        run: echo "::notice::FTP secrets are not set yet, so nothing was uploaded. Add FTP_SERVER, FTP_USERNAME and FTP_PASSWORD in the repository secrets."
+
+      - name: Get the website files
+        if: env.FTP_SERVER != ''
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        if: env.FTP_SERVER != ''
+        with:
+          node-version: 22
+
+      - name: Build the live website (root of the domain, connected to the Google Sheet)
+        if: env.FTP_SERVER != ''
+        run: |
+          npm ci
+          node dev/build-from-config.mjs dist
+          rm -f dist/CNAME dist/.nojekyll
+
+      - name: Upload to Host Africa
+        if: env.FTP_SERVER != ''
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./dist/
+          server-dir: ${{ secrets.FTP_DIR || './' }}
