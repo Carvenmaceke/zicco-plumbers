@@ -115,7 +115,6 @@ def footer(quote_href="/quote/"):
         <li><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></li>
         <li><a href="{escape(wa_link())}" rel="noopener">WhatsApp us</a></li>
         <li><a href="{quote_href}">Request a quote</a></li>
-        <li>{ADDRESS}</li>
       </ul></div>
     </div>
     <div class="legal"><span>&copy; 2026 {NAME}. All rights reserved.</span><span><a href="/privacy/">Privacy</a> &middot; <a href="/sitemap.xml">Sitemap</a></span></div>
