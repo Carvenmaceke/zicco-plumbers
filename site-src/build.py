@@ -81,7 +81,6 @@ def header(path):
   <div class="wrap header-row">
     <a class="brand" href="/">{LOGO}<span>{NAME}<small>PIRB registered &middot; Johannesburg</small></span></a>
     <nav class="nav" aria-label="Main">{links}</nav>
-    <div class="header-actions">{btn_quote("Get a quote", "btn-small")}{btn_call(None, "btn-small")}</div>
     <details class="menu"><summary aria-label="Open menu">{icon("menu", 20)} Menu</summary>
       <nav class="menu-panel" aria-label="Mobile">{mobile}{btn_quote("Request a quote", "")}</nav>
     </details>
