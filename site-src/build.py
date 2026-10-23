@@ -81,7 +81,8 @@ def header(path):
     svc_links = "".join(f'<a href="/services/{x["slug"]}/"{cur(f"/services/{x["slug"]}/")}>{icon(x["icon"], 18)}<span>{x["name"]}</span></a>' for x in SERVICES)
     dropdown = (f'<div class="nav-dd"><button type="button" class="nav-dd-btn" aria-expanded="false" aria-controls="services-menu"{cur("/services/")}>Services {CHEVRON}</button>'
                 f'<div class="nav-dd-panel" id="services-menu">{svc_links}</div></div>')
-    links = dropdown + "".join(f'<a href="{h}"{cur(h)}>{t}</a>' for h, t in NAV if h != "/services/")
+    home = f'<a href="/"{" aria-current=\"page\"" if path == "/" else ""}>Home</a>'
+    links = home + dropdown + "".join(f'<a href="{h}"{cur(h)}>{t}</a>' for h, t in NAV if h != "/services/")
     mobile_svc = "".join(f'<a href="/services/{x["slug"]}/">{x["name"]}</a>' for x in SERVICES)
     mobile = ('<a href="/">Home</a>' + f'<details class="menu-sub"><summary>Services {CHEVRON}</summary><div>{mobile_svc}</div></details>'
               + "".join(f'<a href="{h}">{t}</a>' for h, t in NAV if h != "/services/"))
