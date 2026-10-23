@@ -1,5 +1,5 @@
 """Builds the Zicco Plumbers static site.  Usage: python3 -I build.py <original-site-dir> <out-dir>"""
-import json, os, shutil, sys
+import json, os, re, shutil, sys
 from html import escape
 from urllib.parse import quote
 from PIL import Image
@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from content import *  # noqa
 
 SRC, OUT = sys.argv[1], sys.argv[2]
-CSS_V = "6"
+CSS_V = "7"
 IMG_DIMS = {}
 
 
@@ -73,9 +73,18 @@ def pic(key, sizes="(min-width: 760px) 33vw, 50vw", lazy=True, cls="", alt=None)
 NAV = [("/services/", "Services"), ("/areas/", "Areas"), ("/projects/", "Projects"), ("/about/", "About"), ("/faq/", "FAQ"), ("/contact/", "Contact")]
 
 
+CHEVRON = '<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>'
+
+
 def header(path):
-    links = "".join(f'<a href="{h}"{" aria-current=\"page\"" if path.startswith(h) else ""}>{t}</a>' for h, t in NAV)
-    mobile = "".join(f'<a href="{h}">{t}</a>' for h, t in [("/", "Home")] + NAV)
+    cur = lambda h: ' aria-current="page"' if path.startswith(h) else ""
+    svc_links = "".join(f'<a href="/services/{x["slug"]}/"{cur(f"/services/{x["slug"]}/")}>{icon(x["icon"], 18)}<span>{x["name"]}</span></a>' for x in SERVICES)
+    dropdown = (f'<div class="nav-dd"><button type="button" class="nav-dd-btn" aria-expanded="false" aria-controls="services-menu"{cur("/services/")}>Services {CHEVRON}</button>'
+                f'<div class="nav-dd-panel" id="services-menu">{svc_links}</div></div>')
+    links = dropdown + "".join(f'<a href="{h}"{cur(h)}>{t}</a>' for h, t in NAV if h != "/services/")
+    mobile_svc = "".join(f'<a href="/services/{x["slug"]}/">{x["name"]}</a>' for x in SERVICES)
+    mobile = ('<a href="/">Home</a>' + f'<details class="menu-sub"><summary>Services {CHEVRON}</summary><div>{mobile_svc}</div></details>'
+              + "".join(f'<a href="{h}">{t}</a>' for h, t in NAV if h != "/services/"))
     return f"""<a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap header-row">
@@ -88,7 +97,7 @@ def header(path):
 </header>"""
 
 
-def footer():
+def footer(quote_href="/quote/"):
     svc = "".join(f'<li><a href="/services/{s["slug"]}/">{s["name"]}</a></li>' for s in SERVICES[:7])
     areas = "".join(f'<li><a href="/areas/{a["slug"]}/">Plumber in {a["name"]}</a></li>' for a in AREAS)
     return f"""<footer class="site-footer">
@@ -104,7 +113,7 @@ def footer():
       <div><h2>Contact</h2><ul>
         <li><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></li>
         <li><a href="{escape(wa_link())}" rel="noopener">WhatsApp us</a></li>
-        <li><a href="/quote/">Request a quote</a></li>
+        <li><a href="{quote_href}">Request a quote</a></li>
         <li>{ADDRESS}</li>
       </ul></div>
     </div>
@@ -114,7 +123,7 @@ def footer():
 <div class="sticky-contact" role="group" aria-label="Contact {NAME}">
   <a class="btn btn-call" href="tel:{PHONE_TEL}">{PHONE_SVG} <span>Call</span></a>
   <a class="btn btn-wa" href="{escape(wa_link())}" rel="noopener">{WA_SVG} <span>WhatsApp</span></a>
-  <a class="btn btn-quote" href="/quote/">{QUOTE_SVG} <span>Quote</span></a>
+  <a class="btn btn-quote" href="{quote_href}">{QUOTE_SVG} <span>Quote</span></a>
 </div>"""
 
 
@@ -163,7 +172,7 @@ def crumbs_html(trail):
     return f'<nav class="crumbs" aria-label="Breadcrumb"><ol>{"".join(items)}</ol></nav>'
 
 
-def page(path, title, desc, body, schemas=(), noindex=False, og_image="/og.jpg"):
+def page(path, title, desc, body, schemas=(), noindex=False, og_image="/og.jpg", quote_href="/quote/"):
     url = SITE + path
     ld = "".join(f'<script type="application/ld+json">{json.dumps(s, ensure_ascii=False)}</script>\n' for s in schemas)
     robots = '<meta name="robots" content="noindex">\n' if noindex else ""
@@ -199,7 +208,7 @@ def page(path, title, desc, body, schemas=(), noindex=False, og_image="/og.jpg")
 <main id="main">
 {body}
 </main>
-{footer()}
+{footer(quote_href)}
 </body>
 </html>
 """
@@ -210,11 +219,20 @@ def page(path, title, desc, body, schemas=(), noindex=False, og_image="/og.jpg")
 
 
 # ---------- shared blocks ----------
-def quote_form(heading="Send us a message", intro=None, preselect=None, h_tag="h2"):
+def quote_form(heading="Send us a message", intro=None, preselect=None, h_tag="h2", fixed=None):
     intro = intro or "Tell us what you need and where you are. We'll get back to you with the next steps and a quote."
     boxes = "".join(
         f'<label class="consent"><input type="checkbox" name="services[]" value="{escape(s)}"{" checked" if s == preselect else ""}> {escape(s)}</label>'
         for s in FORM_SERVICES)
+    if fixed:  # (form value, display name, icon): this form is only for one service
+        services_html = (f'<input type="hidden" name="services[]" value="{escape(fixed[0])}">'
+                         f'<div class="field span-2"><span class="field-label">Service</span><div class="fixed-service">{icon(fixed[2], 20)}<span>{escape(fixed[1])}</span></div></div>')
+    else:
+        services_html = f"""<fieldset class="field span-2" style="border:0;padding:0;margin:0">
+        <legend>Which service do you require? <span class="req">*</span></legend>
+        <div class="form-grid cols-2" style="margin-top:6px;gap:6px 14px">{boxes}</div>
+        <p class="small service-error" role="alert" hidden style="color:#b42318;margin:6px 0 0">Please choose at least one service.</p>
+      </fieldset>"""
     return f"""<div class="form-card" id="quote">
   <{h_tag}>{heading}</{h_tag}>
   <p class="muted">{intro}</p>
@@ -226,11 +244,7 @@ def quote_form(heading="Send us a message", intro=None, preselect=None, h_tag="h
       <div class="field"><label for="f-surname">Surname <span class="req">*</span></label><input id="f-surname" name="surname" autocomplete="family-name" required></div>
       <div class="field"><label for="f-email">Email address <span class="hint">(for updates on your request)</span></label><input id="f-email" type="email" name="email" autocomplete="email"></div>
       <div class="field"><label for="f-phone">Contact number <span class="req">*</span></label><input id="f-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" required></div>
-      <fieldset class="field span-2" style="border:0;padding:0;margin:0">
-        <legend>Which service do you require? <span class="req">*</span></legend>
-        <div class="form-grid cols-2" style="margin-top:6px;gap:6px 14px">{boxes}</div>
-        <p class="small service-error" role="alert" hidden style="color:#b42318;margin:6px 0 0">Please choose at least one service.</p>
-      </fieldset>
+      {services_html}
       <div class="field span-2"><label for="f-where">Where are you situated? <span class="req">*</span></label><input id="f-where" name="location" placeholder="Suburb or address, e.g. Sandton" autocomplete="street-address" required></div>
       <div class="field span-2"><label for="f-msg">Tell us about the job <span class="hint">(optional)</span></label><textarea id="f-msg" name="message" placeholder="What's the problem, or what needs to be installed?"></textarea></div>
       <div class="field span-2"><label for="f-photo">Add a photo <span class="hint">(optional)</span></label><input id="f-photo" type="file" name="photo" accept="image/*"></div>
@@ -280,8 +294,8 @@ def map_block():
     return f"""<div class="map-frame"><iframe title="Map showing {NAME}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q={q}&amp;output=embed"></iframe><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query={q}" rel="noopener">{icon("pin", 16)} Open in Google Maps</a></div>"""
 
 
-def page_hero(trail, h1, lead, ctas=True, wa_text=None):
-    c = f'<div class="cta-row">{btn_quote()}{btn_wa(wa_text)}{btn_call()}</div>' if ctas else ""
+def page_hero(trail, h1, lead, ctas=True, wa_text=None, quote_href="/quote/"):
+    c = f'<div class="cta-row">{btn_quote(href=quote_href)}{btn_wa(wa_text)}{btn_call()}</div>' if ctas else ""
     return f"""<section class="hero page-hero">
   <div class="wrap hero-inner" style="grid-template-columns:1fr">
     <div>{crumbs_html(trail)}<h1>{h1}</h1><p class="lead">{lead}</p>{c}</div>
@@ -289,14 +303,14 @@ def page_hero(trail, h1, lead, ctas=True, wa_text=None):
 </section>"""
 
 
-def aside(wa_text=None, related=None):
+def aside(wa_text=None, related=None, quote_href="/quote/"):
     rel = ""
     if related:
         rel = '<div class="aside-card"><h2>Related services</h2><ul class="aside-links">' + "".join(
             f'<li><a href="/services/{r}/">{SERVICE_BY_SLUG[r]["name"]}</a></li>' for r in related) + '<li><a href="/services/">All services &rarr;</a></li></ul></div>'
     return f"""<aside><div class="aside-sticky">
   <div class="aside-card"><h2>Get a quote</h2><p class="muted small">Send a photo of the problem on WhatsApp for the quickest answer. Ask for {CONTACT_PERSON}.</p>
-    {btn_wa(wa_text, "WhatsApp us", "")}{btn_call(None, "")}{btn_quote("Request a quote online", "")}</div>
+    {btn_wa(wa_text, "WhatsApp us", "")}{btn_call(None, "")}{btn_quote("Request a quote online", "", quote_href)}</div>
   <div class="aside-card"><h2>Registered &amp; licensed</h2><ul class="check-list small" style="margin:0"><li>PIRB company no. {PIRB_NO}</li><li>Licensed plumber, licence {LICENCE_NO}</li><li>Can sign plumbing COCs</li></ul></div>
   {rel}
 </div></aside>"""
@@ -442,6 +456,14 @@ def build_services_index():
          body, [breadcrumb_schema(trail)])
 
 
+SERVICE_LINK = re.compile(r'<a href="/services/[^"]*">(.*?)</a>')
+
+
+def unlink_services(html):
+    """Turn links to other service pages into plain text, so a service page is only about that service."""
+    return SERVICE_LINK.sub(r"\1", html)
+
+
 def build_service(s):
     path = f"/services/{s['slug']}/"
     trail = [("Home", "/"), ("Services", "/services/"), (s["name"], path)]
@@ -452,24 +474,25 @@ def build_service(s):
         "geyser-heat-pump-installation": "Heat pumps / Geysers", "drain-camera-inspection": "Drain camera",
         "new-building-plumbing-installations": "New building plumbing installation", "water-booster-pumps": "Water booster pump",
         "metered-showers": "Metered showers", "plumbing-coc-certificates": "Plumbing COC"}[s["slug"]]
-    secs = "".join(f"<h2>{h}</h2>{html}" for h, html in s["sections"])
+    # Keep the page about this one service: mentions of other services stay as plain text, not links.
+    secs = "".join(f"<h2>{h}</h2>{unlink_services(html)}" for h, html in s["sections"])
     fig = f'<figure class="figure-wide">{pic(s["img"], "(min-width: 980px) 720px, 100vw")}</figure>' if s.get("img") else ""
     areas = ", ".join(f'<a href="/areas/{a["slug"]}/">{a["name"]}</a>' for a in AREAS)
-    body = page_hero(trail, s["h1"], s["lead"], wa_text=wa_text) + f"""
+    body = page_hero(trail, s["h1"], s["lead"], wa_text=wa_text, quote_href="#quote") + f"""
 <section class="section"><div class="wrap content-grid">
   <article class="prose">
     {fig}{secs}
     <h2>Areas we cover</h2><p>We're based in Braamfontein and work across Johannesburg, including {areas}.</p>
     <h2>Questions about {s["name"].lower()}</h2>{faq_html(s["faqs"])}
-    <div style="margin-top:40px">{quote_form("Request a quote", f"Tell us about your {s['name'].lower()} job and we'll get back to you.", preselect=form_value)}</div>
+    <div style="margin-top:40px">{quote_form(f"Request a quote for {s['name'].lower()}", f"Tell us about your {s['name'].lower()} job and we'll get back to you.", fixed=(form_value, s["name"], s["icon"]))}</div>
   </article>
-  {aside(wa_text, s["related"])}
+  {aside(wa_text, quote_href="#quote")}
 </div></section>"""
     schema = {"@context": "https://schema.org", "@type": "Service", "name": s["name"], "serviceType": s["name"],
               "description": s["desc"], "url": SITE + path, "provider": {"@id": BUSINESS_ID},
               "areaServed": [{"@type": "Place", "name": a["name"]} for a in AREAS]}
     page(path, s["title"], s["desc"], body, [business_schema(), schema, breadcrumb_schema(trail), faq_schema(s["faqs"])],
-         )
+         quote_href="#quote")
 
 
 def build_areas_index():

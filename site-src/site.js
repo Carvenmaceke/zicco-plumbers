@@ -59,7 +59,7 @@
     }
     form.addEventListener("submit", function (e) {
       var err = form.querySelector(".service-error");
-      if (!form.querySelectorAll('input[name="services[]"]:checked').length) {
+      if (!form.querySelectorAll('input[name="services[]"]:checked, input[type="hidden"][name="services[]"]').length) {
         e.preventDefault();
         if (err) { err.hidden = false; err.scrollIntoView({ block: "center", behavior: "smooth" }); }
         return;
@@ -102,6 +102,15 @@
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
     items.forEach(function (el) { io.observe(el); });
   } else items.forEach(function (el) { el.classList.add("in"); });
+
+  // Services dropdown: opens on click (and on hover on desktop), closes on outside click or Escape.
+  document.querySelectorAll(".nav-dd").forEach(function (dd) {
+    var btn = dd.querySelector(".nav-dd-btn");
+    function set(open) { dd.classList.toggle("open", open); btn.setAttribute("aria-expanded", open ? "true" : "false"); }
+    btn.addEventListener("click", function (e) { e.stopPropagation(); set(!dd.classList.contains("open")); });
+    document.addEventListener("click", function (e) { if (!dd.contains(e.target)) set(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && dd.classList.contains("open")) { set(false); btn.focus(); } });
+  });
 
   // Close the mobile menu after choosing a link.
   document.querySelectorAll(".menu a").forEach(function (a) {
