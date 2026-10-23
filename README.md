@@ -1,128 +1,59 @@
-# Zicco Plumbers: website + ticket, quote and invoice system (demo)
+# Zicco Plumbers: website, requests, quotes and invoices
 
-Everything runs on Netlify. There are no other servers or databases to manage.
+The website is plain files you can host anywhere: GitHub Pages, cPanel or any web host.
+
+Everything behind it runs on **free Google tools**:
+- **Google Sheets:** requests, quotes and invoices;
+- **Gmail:** all notifications and customer emails;
+- **Google Drive:** customer photos;
+- **Google Apps Script:** the backend that connects them.
+
+There's no server to pay for and nothing on Netlify.
 
 | Part | What it is |
 | --- | --- |
-| `public/` | The website: 28 pages, the quote form, customer tracking page, online quote/invoice page and the `/admin/` dashboard |
-| `netlify/functions/` | The backend API (Netlify Functions) |
-| `netlify/lib/` | Shared backend code: storage, email, PDFs, settings |
-| Data | Stored in **Netlify Blobs**, which is built into Netlify, so there's nothing to set up |
-| `site-src/` | The generator that builds the public pages (`python3 site-src/build.py <original-site-folder> public`). You only need it to change page content. |
-| `dev/server.mjs` | Local test server |
+| `site-src/` | Generator for the website pages (`python3 site-src/build.py <original-site-folder> public`) |
+| `public/` | The generated website, including the `/admin/` dashboard |
+| `apps-script/` | The Google Sheets backend. **Set-up guide: [`apps-script/README.md`](apps-script/README.md)** |
+| `site.config.json` | Your Apps Script web app URL and (optionally) your own domain |
+| `dev/` | Build scripts, plus the in-browser demo backend |
+| `netlify/lib/` | Shared code: email templates, quote/invoice maths, validation. Used by the Apps Script build. |
+| `netlify/functions/` | The original Netlify version of the backend. Not needed any more; kept because the demo uses it. |
 
-> **Demo security level.** The dashboard has a simple username/password login. Default: **admin / zicco-demo**. Change it with `ADMIN_USERS` and `SESSION_SECRET` before real customers use it.
+## Going live
 
----
+1. **Set up the Google Sheets backend.** Follow [`apps-script/README.md`](apps-script/README.md); it takes about 10 minutes.
+2. **Put the web app URL in `site.config.json`:**
+   ```json
+   { "appsScriptUrl": "https://script.google.com/macros/s/XXXXXXXX/exec", "customDomain": "" }
+   ```
+3. **Host the website.** Pick one:
+   - **GitHub Pages:** commit `site.config.json`. The workflow in `.github/workflows/pages.yml` publishes the live site on every push. For your own domain, set `customDomain` (e.g. `"www.ziccoplumbersgp.co.za"`) and point the domain's DNS at GitHub Pages.
+   - **Any other host (cPanel, shared hosting…):** run `npm install && npm run build`, then upload everything in the `dist/` folder to your site's root (`public_html`).
+
+While `appsScriptUrl` is empty, the build is a **demo**. It has sample data, a demo banner and a backend that runs in each visitor's browser (dashboard login `admin` / `zicco-demo`), and nothing is saved online or emailed.
 
 ## What it does
 
-### Customers
-1. **Request a quote.** They fill in the form on any page: name, surname, email, number, services (checkboxes), where they're situated, an optional message and an optional photo. Large phone photos are shrunk automatically before upload.
-2. **Get a ticket number.** The thank-you page shows a number like `ZP-48213` and a tracking link. If they gave an email address, a confirmation email is sent too.
-3. **Track the request.** The tracking page at `/track/` shows:
-   - a progress bar: Received → Contacted → Quote sent → Visit scheduled → In progress → Completed;
-   - the booked visit ("We will come on Monday 26 October at 09:00"), with **Add to calendar** and **Confirm this date** buttons;
-   - their quotes and invoices;
-   - a message thread where they can **reply** to the business.
+**Customers**
+- Request a quote: from any service page (the form is locked to that service) or the general quote form, with an optional photo.
+- Get a ticket number and a tracking link: the tracking page shows progress, the booked visit (add to calendar or confirm), quotes and invoices, and a message thread.
+- Get emails for every update, plus a reminder the day before the visit.
+- Accept or decline a quote online, or download the PDF.
 
-   They can also find their request again with the ticket number and phone number.
-4. **Get emails for every update.** These include status changes, visit bookings (with a calendar invite attached), messages, quotes and invoices (with a PDF attached), receipts, and a reminder the day before the visit.
-5. **Accept or decline a quote online,** or download the PDF and print it.
+**The business (`/admin/`)**
+- **Dashboard:** new requests, open jobs, upcoming visits, quotes waiting and money owed or paid.
+- **Tickets:** status, visit booking ("we will come on…"), messages to the customer with quick replies, private notes, photo, WhatsApp/call/email shortcuts, CSV export, and logging phone or WhatsApp jobs.
+- **Quotes and invoices:** made from ready templates, with the client details filled in from the ticket. They're emailed as PDF (with a copy to you), and you can convert a quote to an invoice, mark it paid and email a receipt.
+- **Settings:** business details, banking details, VAT, terms, price list and notification email.
+- **Daily at 06:00:** visit reminders to customers and a summary email to you.
 
-### Business: dashboard at `/admin/`
-- **Dashboard.** Shows new requests, open tickets, visits in the next 7 days, quotes waiting for a reply, unpaid and overdue invoices, and money paid this month.
-- **Tickets.** Filter by status, search, see unread customer replies (red dot) and export to CSV. You can also **log phone or WhatsApp jobs** as tickets.
-- **Ticket page.** See the customer details and photo. Call, WhatsApp (with the message pre-filled) or email them. The update panel lets you:
-  - change the status;
-  - book a visit ("we will come on" date, time and arrival window);
-  - write a message to the customer, with quick-reply templates;
-  - add a **private note** only the team sees;
-  - tick **Email the customer** to send everything in one email.
+Everything is also visible in the Google Sheet: the **Requests** and **Quotes & Invoices** tabs.
 
-  The full timeline is shown underneath.
-- **Quotes and invoices.**
-  - **Create from a ticket.** The client details fill in automatically and the lines come from a ready-made template matching the service. You only adjust what's different.
-  - **Edit.** Add lines from the price list or a template. VAT is optional. Notes and terms are pre-filled. Totals update as you type.
-  - **Send by email.** The client gets the PDF plus an online link, and a copy goes to the business inbox.
-  - **Convert a quote to an invoice** in one click. You can also **duplicate** a document, mark it **paid** (with an optional emailed receipt), accepted, declined or cancelled, and send the link on WhatsApp.
-  - Numbers run in sequence: `Q-0001` for quotes, `INV-0001` for invoices.
-- **Settings.**
-  - Business details, VAT number and **banking details**, all printed on invoices.
-  - Default quote terms and invoice notes.
-  - The **price list**, which is used by the templates.
-  - The notification email address and the Google review link (added to the "job completed" email).
-  - A test-email button.
-- **Daily job at 06:00.** Customers get a reminder the day before their visit. The business gets a summary of today's visits, requests not yet answered, unread replies and overdue invoices.
+## Updating
 
-> The prices in the price list are **sample prices for the demo**. Change them under Settings.
-
----
-
-## Deploy to Netlify
-
-**Important:** the old drag-and-drop deploy only uploads files. It does **not** deploy the backend. Use one of these two options.
-
-### Option A: Netlify CLI (quickest)
-```bash
-npm install
-npx netlify-cli login
-npx netlify-cli link          # pick the existing ziccoplumbersgp.co.za site
-npx netlify-cli deploy --prod
-```
-
-### Option B: GitHub (automatic deploys)
-Push this folder to a GitHub repo. In Netlify, go to **Site configuration → Build & deploy → Link repository**. The settings come from `netlify.toml`.
-
-### Then set environment variables
-In Netlify, go to **Site configuration → Environment variables** and add them. See `.env.example` for the full list. The important ones:
-
-| Variable | Why |
+| Change | Command |
 | --- | --- |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` | Sends email. With Gmail, use `smtp.gmail.com`, port `465` and a Google **App password**. |
-| `BUSINESS_EMAIL` | Where new requests, replies and copies of quotes and invoices are sent. Can also be set in Settings. |
-| `ADMIN_USERS` | Your own logins, e.g. `Ntsikelelo:pass1,Office:pass2` |
-| `SESSION_SECRET` | Any long random text. Required whenever you change the logins. |
-
-Redeploy after adding variables. Then open `/admin/`, go to **Settings**, and click **Send test email**.
-
-**Email without Gmail:** Resend (`RESEND_API_KEY`) also works. Until you verify your domain in Resend, it can only email your own address.
-
----
-
-## GitHub Pages demo
-Every push to `main` publishes a **working demo** to GitHub Pages: https://carvenmaceke.github.io/zicco-plumbers/ (workflow: `.github/workflows/pages.yml`).
-
-GitHub Pages can't run server code, so the build bundles the real backend to run **inside the visitor's browser** (`dev/build-pages-preview.mjs`, `dev/demo/`). Sample data is saved in that browser only, so every visitor gets their own copy. Everything works except sending emails:
-- the quote form and the tracking page;
-- the dashboard at `/admin/` (log in with admin / zicco-demo);
-- quotes, invoices and PDFs.
-
-The banner at the top has a **Reset demo** link that restores the sample data.
-
-One-time setup: on GitHub, go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**.
-
-## Run it on your computer
-```bash
-npm install
-npm run dev
-```
-- Website: http://localhost:8888
-- Dashboard: http://localhost:8888/admin/ (admin / zicco-demo)
-
-Data is saved in `.data/`. Until email is configured, every email (with its PDF and calendar attachments) is saved to `.data/outbox/` so you can open and check it.
-
-To run the 06:00 daily job by hand, open http://localhost:8888/.netlify/functions/daily-reminders, or use the button in Settings.
-
----
-
-## API reference
-| Method & path | Who | Purpose |
-| --- | --- | --- |
-| `POST /api/tickets` | Public | Website form → new ticket |
-| `GET /api/track?id&k` | Customer | Ticket status, visit, messages, documents |
-| `POST /api/track/reply`, `/confirm`, `/lookup` | Customer | Reply, confirm visit, find a ticket by phone number |
-| `GET /api/track/ics?id&k` | Customer | Calendar file for the visit |
-| `GET /api/doc?n&k`, `/api/doc/pdf` | Customer | View or download a quote or invoice |
-| `POST /api/doc/accept`, `/decline` | Customer | Respond to a quote |
-| `/api/admin/*` | Logged-in staff | Tickets, documents, settings, CSV export, test email, daily job |
+| Page content or design | Edit `site-src/`, then `python3 site-src/build.py <original-site-folder> public` |
+| Backend | Edit `apps-script/src/` (or the shared `netlify/lib/`), run `npm run build:backend`, then paste `apps-script/Code.gs` into Apps Script and deploy a new version |
+| Website for a non-GitHub host | `npm run build`, then upload `dist/` |

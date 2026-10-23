@@ -1,10 +1,10 @@
-// Builds a working demo of the site for GitHub Pages, which serves it under /<repo-name>/ and
-// cannot run server code.
-//   node dev/build-pages-preview.mjs <out-dir> <base-path>      e.g.  _site /zicco-plumbers/
-// - rewrites root-relative links ("/services/", "/styles.css", ...) to the base path
-// - bundles the real backend (netlify/functions) to run in the browser, storing sample data in
-//   localStorage, and adds js/demo-shim.js which routes /api/* calls to it
-// - adds a banner explaining the demo
+// Builds the website as plain files you can host anywhere (GitHub Pages, cPanel, any web host).
+//   node dev/build-site.mjs <out-dir> <base-path> [--api <Apps Script web app URL>]
+//   e.g.  node dev/build-site.mjs _site /zicco-plumbers/ --api https://script.google.com/macros/s/XXXX/exec
+// - rewrites root-relative links ("/services/", "/styles.css", ...) to the base path ("/" on your own domain)
+// - adds js/demo-shim.js, which sends the site's /api/* calls to the backend:
+//     with --api: the Google Apps Script backend (Google Sheets + Gmail), see apps-script/README.md
+//     without:    a demo backend running in the visitor's browser with sample data, plus a demo banner
 import fs from "node:fs/promises";
 import * as esbuild from "esbuild";
 import path from "node:path";
@@ -14,6 +14,12 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const out = path.resolve(process.argv[2] || "_site");
 // Changes on every publish so browsers fetch fresh demo scripts instead of cached ones.
 const VERSION = (process.env.GITHUB_SHA || Date.now().toString(36)).slice(0, 10);
+const apiIdx = process.argv.indexOf("--api");
+const API = apiIdx > 0 ? String(process.argv[apiIdx + 1] || "").trim() : "";
+if (API && !/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(API)) {
+  console.error("The --api address should look like https://script.google.com/macros/s/.../exec");
+  process.exit(1);
+}
 const base = ("/" + String(process.argv[3] || "/").replace(/^\/+|\/+$/g, "") + "/").replace(/^\/\/$/, "/");
 
 // Top-level paths of the site. Anything else (e.g. /api/) is left alone.
@@ -41,8 +47,12 @@ async function copy(src, dest) {
   if (![".html", ".js", ".css"].includes(ext)) return fs.copyFile(src, dest);
   let text = rewrite(await fs.readFile(src, "utf8"), ext === ".html");
   if (ext === ".html") {
-    text = text.replace("<head>", `<head>\n<script src="${base}js/demo-shim.js?v=${VERSION}" data-v="${VERSION}"></script>`).replace(/<body([^>]*)>/, `<body$1>\n${BANNER(base)}`);
-    if (!/<meta name="robots"/.test(text)) text = text.replace("</head>", `<meta name="robots" content="noindex">\n</head>`);
+    const apiAttr = API ? ` data-api="${API}"` : "";
+    text = text.replace("<head>", `<head>\n<script src="${base}js/demo-shim.js?v=${VERSION}" data-v="${VERSION}"${apiAttr}></script>`);
+    if (!API) {
+      text = text.replace(/<body([^>]*)>/, `<body$1>\n${BANNER(base)}`);
+      if (!/<meta name="robots"/.test(text)) text = text.replace("</head>", `<meta name="robots" content="noindex">\n</head>`);
+    }
   }
   await fs.writeFile(dest, text);
 }
@@ -52,9 +62,9 @@ await copy(path.join(root, "public"), out);
 await fs.writeFile(path.join(out, ".nojekyll"), "");
 await fs.copyFile(path.join(root, "dev/demo/shim.js"), path.join(out, "js/demo-shim.js"));
 
-// Bundle the backend for the browser, swapping server-only modules for browser versions.
+// Demo only: bundle the backend for the browser, swapping server-only modules for browser versions.
 const demo = (f) => path.join(root, "dev/demo", f);
-await esbuild.build({
+if (!API) await esbuild.build({
   entryPoints: [demo("backend.mjs")],
   outfile: path.join(out, "js/demo-backend.js"),
   bundle: true, format: "esm", platform: "browser", target: "es2020", minify: true, legalComments: "none",
@@ -71,6 +81,6 @@ await esbuild.build({
     },
   }],
 });
-// The preview must not compete with the real site in Google.
-await fs.writeFile(path.join(out, "robots.txt"), "User-agent: *\nDisallow: /\n");
-console.log(`GitHub Pages preview written to ${out} (base ${base})`);
+// A demo must not compete with the real site in Google.
+if (!API) await fs.writeFile(path.join(out, "robots.txt"), "User-agent: *\nDisallow: /\n");
+console.log(`${API ? "Live website (Google Sheets backend)" : "Demo website"} written to ${out} (base ${base})`);

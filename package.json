@@ -2,8 +2,10 @@
   "name": "zicco-plumbers-site",
   "private": true,
   "type": "module",
-  "description": "Zicco Plumbers website with ticketing, quotes and invoices (Netlify Functions + Netlify Blobs)",
+  "description": "Zicco Plumbers website with ticketing, quotes and invoices (Google Sheets + Apps Script backend)",
   "scripts": {
+    "build": "node dev/build-from-config.mjs",
+    "build:backend": "node apps-script/build.mjs",
     "dev": "node dev/server.mjs"
   },
   "engines": {

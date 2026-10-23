@@ -551,7 +551,7 @@
         <div class="card"><h2>Notifications &amp; email</h2>
           ${f("notifyEmail", "Send business notifications to", "(new requests, replies, accepted quotes, daily summary, copies of quotes and invoices)", "email")}
           ${f("googleReviewUrl", "Google review link", "(added to the 'job completed' email)")}
-          <p class="small muted">Email sending: <strong>${{ smtp: "Gmail / SMTP", resend: "Resend", off: "not set up yet" }[state.me.emailMode]}</strong></p>
+          <p class="small muted">Email sending: <strong>${{ gmail: "Gmail (Google Sheets backend)", smtp: "Gmail / SMTP", resend: "Resend", off: "not set up yet" }[state.me.emailMode]}</strong></p>
           <div class="add-row"><input id="test-to" type="email" placeholder="you@example.com" style="flex:1 1 200px;border:1.5px solid #cfd6dc;border-radius:8px;padding:7px 10px"><button type="button" class="btn secondary small" id="test-email">Send test email</button></div>
           <p class="small muted" style="margin-top:12px">Every morning at 06:00 customers get a reminder the day before their visit, and you get a summary of today's visits, waiting requests and overdue invoices.</p>
           <button type="button" class="btn secondary small" id="run-daily">Run the daily summary now</button>
