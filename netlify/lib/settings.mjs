@@ -8,7 +8,7 @@ export const DEFAULT_SETTINGS = {
   contactPerson: "Ntsikelelo Mpayipeli",
   phone: BUSINESS.phone,
   email: "",
-  address: "33 Jorissen Street, Geldenhuys Building\nBraamfontein, Johannesburg, 2001",
+  address: "Braamfontein, Johannesburg",
   website: "ziccoplumbersgp.co.za",
   registration: "PIRB company no. 72110 · Licensed plumber 8610/19",
   vatNumber: "",

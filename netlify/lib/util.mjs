@@ -5,7 +5,7 @@ export const BUSINESS = {
   phone: "+27 81 440 5778",
   phoneTel: "+27814405778",
   whatsapp: "27814405778",
-  address: "33 Jorissen Street, Geldenhuys Building, Braamfontein, Johannesburg",
+  address: "Braamfontein, Johannesburg",
 };
 
 export const SITE_URL = (process.env.SITE_URL || process.env.URL || "https://ziccoplumbersgp.co.za").replace(/\/$/, "");

@@ -6,8 +6,8 @@ PHONE_DISPLAY = "+27 81 440 5778"
 PHONE_TEL = "+27814405778"
 WA_NUMBER = "27814405778"
 CONTACT_PERSON = "Ntsikelelo Mpayipeli"
-STREET = "33 Jorissen Street, Geldenhuys Building"
-ADDRESS = "33 Jorissen Street, Geldenhuys Building, Braamfontein, Johannesburg, Gauteng"
+# No street address is published; only the area the business is based in.
+AREA = "Braamfontein, Johannesburg"
 PIRB_NO = "72110"
 LICENCE_NO = "8610/19"
 UPDATED = "2026-10-23"
@@ -406,7 +406,7 @@ AREAS = [
     {
         "slug": "braamfontein", "name": "Braamfontein",
         "intro": [
-            "Zicco Plumbers is based in Braamfontein, at 33 Jorissen Street in the Geldenhuys Building. That makes us the local plumber for Braamfontein's offices, apartment blocks, shops and the many student residences around the universities.",
+            "Zicco Plumbers is based in Braamfontein. That makes us the local plumber for Braamfontein's offices, apartment blocks, shops and the many student residences around the universities.",
             "Much of our work here is in multi-storey buildings: drainage stacks, water supply, booster pumps for upper floors, and metered showers and heat pumps in student accommodation.",
         ],
         "focus": ["metered-showers", "plumbing-maintenance-repairs", "blocked-drains-drain-cleaning", "geyser-heat-pump-installation", "water-booster-pumps"],

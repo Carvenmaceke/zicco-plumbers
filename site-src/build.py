@@ -123,7 +123,6 @@ def footer(quote_href="/quote/"):
 <div class="sticky-contact" role="group" aria-label="Contact {NAME}">
   <a class="btn btn-call" href="tel:{PHONE_TEL}">{PHONE_SVG} <span>Call</span></a>
   <a class="btn btn-wa" href="{escape(wa_link())}" rel="noopener">{WA_SVG} <span>WhatsApp</span></a>
-  <a class="btn btn-quote" href="{quote_href}">{QUOTE_SVG} <span>Quote</span></a>
 </div>"""
 
 
@@ -140,7 +139,7 @@ def business_schema():
         "telephone": PHONE_TEL,
         "image": SITE + "/og.jpg",
         "logo": SITE + "/favicon.svg",
-        "address": {"@type": "PostalAddress", "streetAddress": STREET, "addressLocality": "Braamfontein",
+        "address": {"@type": "PostalAddress", "addressLocality": "Braamfontein",
                     "addressRegion": "Gauteng", "addressCountry": "ZA"},
         "areaServed": [{"@type": "Place", "name": a["name"]} for a in AREAS],
         "employee": {"@type": "Person", "name": CONTACT_PERSON},
@@ -277,7 +276,7 @@ def cta_band(title="Need a plumber in Johannesburg?", text=None):
     text = text or f"Call or WhatsApp {PHONE_DISPLAY} and ask for {CONTACT_PERSON}, or send us the details online."
     return f"""<section class="section"><div class="wrap"><div class="cta-band reveal">
   <div><h2>{title}</h2><p>{text}</p></div>
-  <div class="cta-row">{btn_call()}{btn_wa()}{btn_quote()}</div>
+  <div class="cta-row">{btn_quote()}</div>
 </div></div></section>"""
 
 
@@ -289,16 +288,10 @@ def area_links():
     return '<ul class="area-list">' + "".join(f'<li><a href="/areas/{a["slug"]}/">{a["name"]}</a></li>' for a in AREAS) + "</ul>"
 
 
-def map_block():
-    q = quote(ADDRESS + ", South Africa")
-    return f"""<div class="map-frame"><iframe title="Map showing {NAME}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q={q}&amp;output=embed"></iframe><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query={q}" rel="noopener">{icon("pin", 16)} Open in Google Maps</a></div>"""
-
-
-def page_hero(trail, h1, lead, ctas=True, wa_text=None, quote_href="/quote/"):
-    c = f'<div class="cta-row">{btn_quote(href=quote_href)}{btn_wa(wa_text)}{btn_call()}</div>' if ctas else ""
+def page_hero(trail, h1, lead, **_):
     return f"""<section class="hero page-hero">
   <div class="wrap hero-inner" style="grid-template-columns:1fr">
-    <div>{crumbs_html(trail)}<h1>{h1}</h1><p class="lead">{lead}</p>{c}</div>
+    <div>{crumbs_html(trail)}<h1>{h1}</h1><p class="lead">{lead}</p></div>
   </div>
 </section>"""
 
@@ -310,7 +303,7 @@ def aside(wa_text=None, related=None, quote_href="/quote/"):
             f'<li><a href="/services/{r}/">{SERVICE_BY_SLUG[r]["name"]}</a></li>' for r in related) + '<li><a href="/services/">All services &rarr;</a></li></ul></div>'
     return f"""<aside><div class="aside-sticky">
   <div class="aside-card"><h2>Get a quote</h2><p class="muted small">Send a photo of the problem on WhatsApp for the quickest answer. Ask for {CONTACT_PERSON}.</p>
-    {btn_wa(wa_text, "WhatsApp us", "")}{btn_call(None, "")}{btn_quote("Request a quote online", "", quote_href)}</div>
+    {btn_quote("Request a quote online", "", quote_href)}</div>
   <div class="aside-card"><h2>Registered &amp; licensed</h2><ul class="check-list small" style="margin:0"><li>PIRB company no. {PIRB_NO}</li><li>Licensed plumber, licence {LICENCE_NO}</li><li>Can sign plumbing COCs</li></ul></div>
   {rel}
 </div></aside>"""
@@ -336,7 +329,7 @@ def build_home():
       <p class="eyebrow">PIRB-registered plumbers &middot; Johannesburg</p>
       <h1>Reliable plumbing, <span class="hl">done right</span> the first time.</h1>
       <p class="lead">{NAME} clears blocked drains, finds hidden leaks, installs geysers and heat pumps, and delivers complete plumbing for new and high-rise buildings across Johannesburg.</p>
-      <div class="cta-row">{btn_quote()}{btn_wa()}</div>
+      <div class="cta-row">{btn_quote()}</div>
       <ul class="chips"><li>{icon("shield", 18)} PIRB registered company</li><li>{icon("id", 18)} Licensed plumber</li><li>{icon("file", 18)} COC issued</li></ul>
     </div>
     <div class="hero-card">
@@ -347,7 +340,6 @@ def build_home():
         <li><span><strong>Get a clear quote.</strong> We explain what's needed and what it will cost.</span></li>
         <li><span><strong>Job done properly.</strong> Work by a licensed plumber, with a COC where required.</span></li>
       </ol>
-      {btn_quote("Request a quote", "")}{btn_call(None, "")}
     </div>
   </div>
 </section>
@@ -427,9 +419,7 @@ def build_home():
       <p class="eyebrow">Contact</p>
       <h2>Request a quote</h2>
       <p>Call or send a WhatsApp message and ask for {CONTACT_PERSON}, or fill in the form and we'll get back to you.</p>
-      <div class="cta-row">{btn_call(PHONE_DISPLAY)}{btn_wa()}</div>
-      <dl class="details"><dt>Address</dt><dd>{ADDRESS}</dd><dt>Phone &amp; WhatsApp</dt><dd><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></dd></dl>
-      <div style="margin-top:24px">{map_block()}</div>
+      <dl class="details"><dt>Based in</dt><dd>{AREA}</dd><dt>Phone &amp; WhatsApp</dt><dd><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></dd></dl>
     </div>
     {quote_form()}
   </div>
@@ -557,7 +547,7 @@ def build_about():
 <section class="section"><div class="wrap two-col">
   <div class="prose">
     <h2>Who we are</h2>
-    <p>{NAME} is a plumbing company based at {ADDRESS}. We install plumbing on new construction sites and in high-rise buildings, and fit hot water heat pumps, geysers, water booster pumps and metered showers. We also clear blocked drains, carry out water jetting and drain camera inspections, find leaks, install subsoil drainage and handle plumbing repairs and maintenance.</p>
+    <p>{NAME} is a plumbing company based in {AREA}. We install plumbing on new construction sites and in high-rise buildings, and fit hot water heat pumps, geysers, water booster pumps and metered showers. We also clear blocked drains, carry out water jetting and drain camera inspections, find leaks, install subsoil drainage and handle plumbing repairs and maintenance.</p>
     <p>When you call or WhatsApp {PHONE_DISPLAY}, ask for {CONTACT_PERSON}.</p>
     <h2>What you can expect</h2>
     <ul class="check-list"><li>A PIRB-registered company (no. {PIRB_NO})</li><li>A licensed plumber (licence {LICENCE_NO}) who can sign plumbing COCs</li><li>Experience on construction sites and in high-rise buildings</li><li>A quote before work starts</li></ul>
@@ -587,14 +577,12 @@ def build_contact():
 <section class="section"><div class="wrap two-col">
   <div>
     <h2>Get in touch</h2>
-    <div class="cta-row">{btn_call(PHONE_DISPLAY)}{btn_wa()}</div>
-    <dl class="details"><dt>Phone &amp; WhatsApp</dt><dd><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></dd><dt>Ask for</dt><dd>{CONTACT_PERSON}</dd><dt>Address</dt><dd>{ADDRESS}</dd><dt>Registration</dt><dd>PIRB company no. {PIRB_NO} &middot; Licence {LICENCE_NO}</dd></dl>
-    <div style="margin-top:24px">{map_block()}</div>
+    <dl class="details"><dt>Phone &amp; WhatsApp</dt><dd><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></dd><dt>Ask for</dt><dd>{CONTACT_PERSON}</dd><dt>Based in</dt><dd>{AREA}</dd><dt>Registration</dt><dd>PIRB company no. {PIRB_NO} &middot; Licence {LICENCE_NO}</dd></dl>
   </div>
   {quote_form()}
 </div></section>"""
     page("/contact/", "Contact Zicco Plumbers | Plumber in Braamfontein, Johannesburg",
-         f"Contact Zicco Plumbers: call or WhatsApp {PHONE_DISPLAY}. {ADDRESS}.", body, [business_schema(), breadcrumb_schema(trail)])
+         f"Contact Zicco Plumbers: call or WhatsApp {PHONE_DISPLAY}. Based in {AREA}, working across Johannesburg.", body, [business_schema(), breadcrumb_schema(trail)])
 
 
 def build_quote():
@@ -604,7 +592,6 @@ def build_quote():
     <p class="lead">Tell us what you need and where you are, and we'll get back to you. A photo of the problem helps us quote accurately.</p>
     <ul class="check-list"><li>PIRB-registered company no. {PIRB_NO}</li><li>Licensed plumber, licence {LICENCE_NO}</li><li>Plumbing COCs issued</li></ul>
     <p>Rather talk to someone? Call or WhatsApp <a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a> and ask for {CONTACT_PERSON}.</p>
-    <div class="cta-row">{btn_call(None, "")}{btn_wa(None, "WhatsApp us", "")}</div>
   </div>
   {quote_form("Send us a message")}
 </div></section>"""
@@ -621,7 +608,6 @@ def build_thanks():
     <p>Save this number. You can follow your request, read our replies and send us messages on your tracking page. If you gave us an email address, we've also emailed you the link.</p>
     <p><a class="btn btn-call btn-big track-link" href="/track/">Track your request</a></p></div>
   <p class="lead">{NAME} will be in touch on the number you gave us. If it's urgent, call or WhatsApp us now.</p>
-  <div class="cta-row" style="justify-content:center">{btn_call()}{btn_wa()}</div>
   <p><a href="/">&larr; Back to the home page</a></p>
 </div></section>"""
     page("/thank-you/", "Thank You | Zicco Plumbers", "Thanks for contacting Zicco Plumbers.", body, noindex=True)
@@ -659,7 +645,7 @@ def build_privacy():
   {crumbs_html(trail)}
   <h1>Privacy</h1>
   <p class="muted">Last updated 22 October 2026</p>
-  <p>This is the website of {NAME} ({ADDRESS}). This page explains what information this website handles, in line with South Africa&rsquo;s Protection of Personal Information Act (POPIA).</p>
+  <p>This is the website of {NAME}, based in {AREA}. This page explains what information this website handles, in line with South Africa&rsquo;s Protection of Personal Information Act (POPIA).</p>
   <h2>Quote and contact form</h2>
   <p>If you use the quote form, we receive the details you enter: your name, surname, contact number, email address (if given), location, the services you need, your message and any photo you attach. We use this only to respond to your request, quote for and carry out the work, and keep a record of the job.</p>
   <p>Your request is stored securely with Netlify, the company that hosts this website, and we email you a private link where you can follow your request. Quotes and invoices we send you are stored the same way. Emails are sent through our email provider. We keep your details for as long as we need them for your job, our accounting records and the law.</p>
@@ -667,8 +653,6 @@ def build_privacy():
   <p>If you call or send a WhatsApp message, {NAME} receives your phone number and whatever you tell us, so we can reply and quote for the job. Phone calls and WhatsApp messages also pass through your mobile network and Meta (WhatsApp), who handle them under their own privacy policies.</p>
   <h2>What we don't do</h2>
   <p>We do not sell your details or share them with other companies for marketing. This website has no user accounts or advertising trackers.</p>
-  <h2>Google Maps</h2>
-  <p>Some pages show an embedded Google Map. Loading it sends technical data, such as your IP address, to Google, which may set its own cookies under the <a href="https://policies.google.com/privacy" rel="noopener">Google privacy policy</a>.</p>
   <h2>Links to other sites</h2>
   <p>This site links to other sites, such as PlumberFinder and pirb.co.za. We are not responsible for their content or privacy practices.</p>
   <h2>Your rights</h2>
@@ -682,7 +666,6 @@ def build_404():
     body = f"""<section class="section"><div class="wrap narrow" style="text-align:center">
   <h1>Page not found</h1>
   <p class="lead">Sorry, that page doesn't exist. Need a plumber? We're one call away.</p>
-  <div class="cta-row" style="justify-content:center">{btn_call()}{btn_wa()}</div>
   <p><a href="/">Home</a> &middot; <a href="/services/">Services</a> &middot; <a href="/contact/">Contact</a></p>
 </div></section>"""
     page("/404.html", "Page Not Found | Zicco Plumbers", "Page not found.", body, noindex=True)
