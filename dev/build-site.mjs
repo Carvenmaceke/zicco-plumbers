@@ -60,6 +60,27 @@ async function copy(src, dest) {
 await fs.rm(out, { recursive: true, force: true });
 await copy(path.join(root, "public"), out);
 await fs.writeFile(path.join(out, ".nojekyll"), "");
+// cPanel / Apache hosts (e.g. HostAfrica): always use https://www., show our 404 page, cache images and styles.
+if (base === "/") await fs.writeFile(path.join(out, ".htaccess"), `Options -Indexes
+ErrorDocument 404 /404.html
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTP_HOST} !^www\\. [NC]
+RewriteCond %{HTTP_HOST} !^localhost [NC]
+RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} !^localhost [NC]
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpeg "access plus 30 days"
+ExpiresByType image/webp "access plus 30 days"
+ExpiresByType image/svg+xml "access plus 30 days"
+ExpiresByType text/css "access plus 7 days"
+ExpiresByType application/javascript "access plus 7 days"
+</IfModule>
+`);
 await fs.copyFile(path.join(root, "dev/demo/shim.js"), path.join(out, "js/demo-shim.js"));
 
 // Demo only: bundle the backend for the browser, swapping server-only modules for browser versions.
