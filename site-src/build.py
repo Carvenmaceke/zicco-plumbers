@@ -99,7 +99,7 @@ def header(path):
 
 
 def footer():
-    links = "".join(f'<a href="{h}">{t}</a>' for h, t in [("/", "Home")] + NAV + [("/privacy/", "Privacy")])
+    links = "".join(f'<a href="{h}">{t}</a>' for h, t in [("/", "Home")] + NAV + [("/privacy/", "Privacy"), ("/website-credits/", "Website credits")])
     return f"""<footer class="site-footer">
   <div class="wrap footer-main">
     <div class="footer-id">
@@ -142,6 +142,15 @@ def business_schema():
                             "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": s["name"], "url": f"{SITE}/services/{s['slug']}/"}} for s in SERVICES]},
         "sameAs": ["https://www.plumberfinder.co.za/plumbers/zicco-plumbers-3315b48d"],
     }
+
+
+AXE_CONNECT = {"@type": "Organization", "@id": "https://axeconnect.co.za/#organization", "name": "Axe Connect",
+               "url": "https://axeconnect.co.za/", "email": "info@axeconnect.co.za", "telephone": "+27607950837"}
+
+
+def website_schema():
+    return {"@context": "https://schema.org", "@type": "WebSite", "@id": f"{SITE}/#website", "name": NAME, "url": SITE + "/",
+            "publisher": {"@id": BUSINESS_ID}, "creator": AXE_CONNECT, "inLanguage": "en-ZA"}
 
 
 def breadcrumb_schema(trail):
@@ -425,7 +434,7 @@ def build_home():
 </section>"""
     page("/", "Plumber Johannesburg | Drains, Leaks, Geysers & Heat Pumps | Zicco Plumbers",
          f"PIRB-registered plumber in Johannesburg. Blocked drains, leak detection, geysers, heat pumps, water jetting and new building plumbing. COC issued. Call or WhatsApp {PHONE_DISPLAY}.",
-         body, [business_schema(), faq_schema(HOME_FAQS)])
+         body, [business_schema(), website_schema(), faq_schema(HOME_FAQS)])
 
 
 def build_services_index():
@@ -709,6 +718,35 @@ def build_privacy():
     page("/privacy/", "Privacy | Zicco Plumbers", "How the Zicco Plumbers website handles your personal information under POPIA.", body, [breadcrumb_schema(trail)])
 
 
+CREDIT_FAQS = [
+    ("Who designed the Zicco Plumbers website?",
+     'The Zicco Plumbers website was designed and built by <a href="https://axeconnect.co.za/" rel="noopener">Axe Connect</a>, a South African web design and business systems company based in Pretoria.'),
+    ("What did Axe Connect build for Zicco Plumbers?",
+     "Axe Connect built the full website, with a page for every plumbing service and area, plus the system behind it: an online quote form with photo upload, a tracking page where customers follow their job, and a manager dashboard where Zicco Plumbers updates jobs, books visits and emails quotes and invoices."),
+    ("Who looks after the Zicco Plumbers website?",
+     "Axe Connect looks after the website, its hosting and updates for Zicco Plumbers."),
+    ("How can I get a website like this for my business?",
+     'Contact Axe Connect on WhatsApp at <a href="https://wa.me/27607950837" rel="noopener">+27 60 795 0837</a>, email <a href="mailto:info@axeconnect.co.za">info@axeconnect.co.za</a>, or visit <a href="https://axeconnect.co.za/" rel="noopener">axeconnect.co.za</a>.'),
+]
+
+
+def build_credits():
+    trail = [("Home", "/"), ("Website credits", "/website-credits/")]
+    qa = "".join(f"<h2>{q}</h2>\n  <p>{a}</p>\n  " for q, a in CREDIT_FAQS)
+    body = f"""<section class="section prose"><div class="wrap narrow">
+  {crumbs_html(trail)}
+  <h1>Website credits</h1>
+  <p class="lead">This website was designed and built for {NAME} by <a href="https://axeconnect.co.za/" rel="noopener">Axe Connect</a>.</p>
+  {qa}<p><a href="/">&larr; Back to the home page</a></p>
+</div></section>"""
+    credits_page = {"@context": "https://schema.org", "@type": "WebPage", "@id": f"{SITE}/website-credits/", "url": f"{SITE}/website-credits/",
+                    "name": "Website credits", "isPartOf": {"@id": f"{SITE}/#website"}, "about": {"@id": f"{SITE}/#website"},
+                    "creator": AXE_CONNECT, "mentions": AXE_CONNECT}
+    page("/website-credits/", "Who Designed the Zicco Plumbers Website? | Website Credits",
+         "The Zicco Plumbers website was designed and built by Axe Connect, a South African web design and business systems company. See what was built and how to get in touch.",
+         body, [breadcrumb_schema(trail), credits_page, faq_schema(CREDIT_FAQS)])
+
+
 def build_404():
     body = f"""<section class="section"><div class="wrap narrow" style="text-align:center">
   <h1>Page not found</h1>
@@ -728,7 +766,7 @@ def build_static():
         shutil.copy2(f"{here}/{js}", f"{OUT}/js/{js}")
     shutil.copytree(f"{here}/admin", f"{OUT}/admin")
     paths = ["/", "/services/"] + [f"/services/{s['slug']}/" for s in SERVICES] + ["/areas/"] + \
-        [f"/areas/{a['slug']}/" for a in AREAS] + ["/projects/", "/about/", PROFILE_PATH, "/faq/", "/contact/", "/quote/", "/privacy/"]
+        [f"/areas/{a['slug']}/" for a in AREAS] + ["/projects/", "/about/", PROFILE_PATH, "/faq/", "/contact/", "/quote/", "/privacy/", "/website-credits/"]
     urls = "\n".join(f"  <url><loc>{SITE}{p}</loc><lastmod>{UPDATED}</lastmod></url>" for p in paths)
     with open(f"{OUT}/sitemap.xml", "w") as f:
         f.write(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}\n</urlset>\n')
@@ -746,6 +784,6 @@ if __name__ == "__main__":
         build_service(s)
     for a in AREAS:
         build_area(a)
-    build_projects(); build_about(); build_faq(); build_contact(); build_profile(); build_quote(); build_thanks(); build_track(); build_doc(); build_privacy(); build_404()
+    build_projects(); build_about(); build_faq(); build_contact(); build_profile(); build_quote(); build_thanks(); build_track(); build_doc(); build_privacy(); build_credits(); build_404()
     build_static()
     print("built", sum(len(fs) for _, _, fs in os.walk(OUT)), "files")
